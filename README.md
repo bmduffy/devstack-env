@@ -28,6 +28,8 @@ yum to install the relevant software, it just makes your life easier.
 - check it's installed **whereis vagrant** and run **vagrant**
 - If it doesn't start, log out and log in again
 - vagrant plugin install vagrant-vbguest
+- vagrant plugin install vagrant-triggers
+- vagrant plugin install vagrant-env
 - [Why use Vagrant?](https://www.vagrantup.com/docs/why-vagrant/)
 
 ## Create Development Environment

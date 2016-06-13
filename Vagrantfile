@@ -13,10 +13,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder ".", "/vagrant", disabled: true
     config.vm.synced_folder ".", "/home/vagrant/sync", disabled: true
 
+    # scripts to run on host on vagrant up + destroy
+
+    config.trigger.before :up do
+        info "Set /etc/host info ..."
+        run "./pre-provision.sh"
+    end
+
+    config.trigger.after :up do
+        info "Mount /opt/devstack/ on guest to ./devstack/ on host ..."
+        run "./post-provision.sh"
+    end
+
+    config.trigger.after :destroy do
+        info "Clean up host after VM destroyed ..."
+        run "./clean-up.sh"
+    end 
+
     config.vm.define "guest_box" do |box|
 
         # set up host only adapter for horizon        
-        box.vm.network "private_network", ip: "172.18.161.6"
+        box.vm.network "private_network", ip: ENV['VAGRANT_DEVSTACK_HOST_IP']
 
         # configure the box instancd
         box.vm.provider "virtualbox" do |instance|
