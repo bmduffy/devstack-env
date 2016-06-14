@@ -1,4 +1,4 @@
-# Getting Started With Devstack
+## Getting Started With Devstack
 
 You can choose any VM software you like. I pefer VirtualBox, I have had 
 more experience with it, and it seems to play well with Centos 7.
@@ -11,17 +11,13 @@ environment that Devstack will be set up in.
 You will need to install the following get Devstack working on a VM. Use 
 yum to install the relevant software, it just makes your life easier.
 
-## Option 1: Install VirtualBox
+### Install VirtualBox
 
 - Install VirtualBox >= 5.0
 - The best instructions I have found that actually work are [here](http://www.if-not-true-then-false.com/2010/install-virtualbox-with-yum-on-fedora-centos-red-hat-rhel/)
 - These instructions cover Fedora and RHEL linux (Centos) for a variety of versions
 
-## Option 2: Install KVM
-
-- I haven't done this ...
-
-## Install Vagrant
+### Install Vagrant
 
 - Get RPM [here](https://www.vagrantup.com/downloads.html)
 - sudo yum install **vagrant_1.8.1_x86_64.rpm** or latest

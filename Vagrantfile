@@ -4,7 +4,9 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-
+    
+    config.env.enable # enable env plugin
+    
     config.vm.box = "centos/7"    
     config.vm.box_check_update = true
     config.ssh.forward_agent = true

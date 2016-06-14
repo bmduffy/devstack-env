@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "running pre provisioning ..."
+source ./.env
 
-echo VAGRANT_DEVSTACK_HOST_IP="172.18.161.6" > .env
+echo "Running pre provisioning ..."
