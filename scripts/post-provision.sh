@@ -13,7 +13,7 @@ else
     sudo yum install -y sshfs
 fi
 
-if grep -q ${VAGRANT_DEVSTACK_HOST_NAME} ${SSH_CONFIG}; then
+if grep -q ${VAGRANT_DEVSTACK_HOSTNAME} ${SSH_CONFIG}; then
     echo "ssh configured with vagrant user ..." 
 else
     
@@ -21,7 +21,7 @@ else
     echo "${VAGRNAT_DEVSTACK_HOST_ENTRY}" >> ${SSH_CONFIG}
     
     ssh-copy-id -i ${DEFAULT_RSA_KEY} ${VAGRANT_DEVSTACK_HOSTNAME}
-    sshpass "pass" ssh ${VAGRANT_DEVSTACK_HOSTNAME}
+    ssh ${VAGRANT_DEVSTACK_HOSTNAME}
 
     echo "Established ssh connection ..."
 
