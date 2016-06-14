@@ -1,1 +1,5 @@
+
+# ignore these folders
+
 .vagrant
+devstack

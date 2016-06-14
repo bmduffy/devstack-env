@@ -20,10 +20,23 @@ else
     echo "Configuring ssh with vagrant user ..."
     echo "${VAGRNAT_DEVSTACK_HOST_ENTRY}" >> ${SSH_CONFIG}
     
-    ssh-copy-id -i ${DEFAULT_RSA_KEY} ${VAGRANT_DEVSTACK_HOSTNAME}
-    ssh ${VAGRANT_DEVSTACK_HOSTNAME}
+    host=$(grep -n ${VAGRANT_DEVSTACK_HOSTNAME} ${SSH_KNOWN_HOSTS} | awk '{split($0,a,":"); print a[1]}')
+    
+    if [ -n "${host}" ]; then
+        sed -i.bak -e "${host}d" ${SSH_KNOWN_HOSTS}
+    else
+        echo "'${VAGRANT_DEVSTACK_HOSTNAME}' not a known host ..."
+    fi
 
-    echo "Established ssh connection ..."
+    ipaddr=$(grep -n ${VAGRANT_DEVSTACK_HOST_IP} ${SSH_KNOWN_HOSTS} | awk '{split($0,a,":"); print a[1]}')
+    
+    if [ -n "${ipaddr}" ]; then
+        sed -i.bak -e "${ipaddr}d" ${SSH_KNOWN_HOSTS}
+    else
+        echo "'${VAGRANT_DEVSTACK_HOST_IP}' not a known ip ..."
+    fi
+
+    sshpass -p "pass" ssh-copy-id -i ${DEFAULT_RSA_KEY} ${VAGRANT_DEVSTACK_HOSTNAME}
 
     sshfs ${VAGRANT_DEVSTACK_MOUNT} devstack
 

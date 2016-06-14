@@ -14,11 +14,21 @@ if grep -q ${VAGRANT_DEVSTACK_HOSTNAME} ${SSH_CONFIG}; then
     
     echo "Deleted host entry from ssh config ..."
     
-    line=$(grep -n ${VAGRANT_DEVSTACK_HOSTNAME} ${SSH_KNOWN_HOSTS} | awk '{split($0,a,":"); print a[1]}')
-    sed -i.bak -e "${line}d" ${SSH_KNOWN_CONFIG}
-
-    line=$(grep -n ${VAGRANT_DEVSTACK_HOST_IP} ${SSH_KNOWN_HOSTS} | awk '{split($0,a,":"); print a[1]}')
-    sed -i.bak -e "${line}d" ${SSH_KNOWN_CONFIG}
+    host=$(grep -n ${VAGRANT_DEVSTACK_HOSTNAME} ${SSH_KNOWN_HOSTS} | awk '{split($0,a,":"); print a[1]}')
+    
+    if [ -n "${host}" ]; then
+        sed -i.bak -e "${host}d" ${SSH_KNOWN_HOSTS}
+    else
+        echo "'${VAGRANT_DEVSTACK_HOSTNAME}' not a known host ..."
+    fi
+    
+    ipaddr=$(grep -n ${VAGRANT_DEVSTACK_HOST_IP} ${SSH_KNOWN_HOSTS} | awk '{split($0,a,":"); print a[1]}')
+    
+    if [ -n "${ipaddr}" ]; then
+        sed -i.bak -e "${ipaddr}d" ${SSH_KNOWN_HOSTS}
+    else
+        echo "'${VAGRANT_DEVSTACK_HOST_IP}' not a known ip ..."
+    fi
     
     echo "Deleted host from known hosts ..."
 else 
