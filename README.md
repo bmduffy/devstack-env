@@ -1,18 +1,13 @@
-## Deploy DevStack into a VM with Vagrant
+## Deploy DevStack into a VM with Vagrant
 
-You can choose any VM software you like. I pefer VirtualBox, I have had more experience with it, and it seems to play 
-well with Centos 7. Whichever VM software you choose, it should be able to do nested virtualization. This is because you will
-be running virutal machines, that is Nova nodes, inside virtual machines, that is your sandboxed environment that DevStack
-will be set up in.   
-
-You will need to install the following get Devstack working on a VM. Use yum to install the relevant software, it just makes
-your life easier.
+The goal of this project is to deploy DevStack into a VM, in an automated and easily repeatable way, so that you can get 
+developing OpenStack as quickly as possible. I only cater for a Centos 7 host box, so the prerequisites are tailored 
+this environment.
 
 ### Prerequisites
 
-#### Installing VirtualBox
-
-The following steps worked for me when installing VirtualBox. For more information go
+You can choose any VM software you like. I pefer VirtualBox, I have had more experience with it, and it seems to play 
+well with Centos 7. The following steps worked for me when installing VirtualBox. For more information go
 [here](http://www.if-not-true-then-false.com/2010/install-virtualbox-with-yum-on-fedora-centos-red-hat-rhel/)
 
 ```
@@ -47,13 +42,13 @@ yum install VirtualBox-5.0
 usermod -a -G vboxusers Brian ## CHANGE: insert your username here
 ```
 
-#### Install Vagrant
+You will also need to install Vagrant, which will use whatever virtualization software you tell it to. For more information
+about why using Vagrant might be a good idea go [here](https://www.vagrantup.com/docs/why-vagrant/).
 
-For more information about why using Vagrant might be a good idea go [here](https://www.vagrantup.com/docs/why-vagrant/).
 Get the latest Vagrant RPM [here](https://www.vagrantup.com/downloads.html)
 
 ```
-# 1. Installing Vagrant 
+# 1. Install Vagrant 
 
 sudo yum install **vagrant_1.8.1_x86_64.rpm**
 
