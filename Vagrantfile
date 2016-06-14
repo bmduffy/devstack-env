@@ -3,6 +3,7 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     
     config.env.enable # enable env plugin
@@ -27,6 +28,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         run "sh ./scripts/post-provision.sh"
     end
 
+    config.trigger.after :provision do
+        info "Mount /opt/devstack/ on guest to ./devstack/ on host ..."
+        run "sh ./scripts/post-provision.sh"
+    end
+
     config.trigger.after :destroy do
         info "Clean up host after VM destroyed ..."
         run "sh ./scripts/clean-up.sh"
@@ -34,7 +40,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.define "guest_box" do |box|
 
-        # set up host only adapter for horizon        
+        # set up host only adapter for horizon
+        ipaddr = ENV['VAGRANT_DEVSTACK_HOST_IP']
         box.vm.network "private_network", ip: "172.18.161.6"
 
         # configure the box instancd
