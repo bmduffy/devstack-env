@@ -17,23 +17,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.trigger.before :up do
         info "Set /etc/host info ..."
-        run "./pre-provision.sh"
+        run "sh ./scripts/pre-provision.sh"
     end
 
     config.trigger.after :up do
         info "Mount /opt/devstack/ on guest to ./devstack/ on host ..."
-        run "./post-provision.sh"
+        run "sh ./scripts/post-provision.sh"
     end
 
     config.trigger.after :destroy do
         info "Clean up host after VM destroyed ..."
-        run "./clean-up.sh"
+        run "sh ./scripts/clean-up.sh"
     end 
 
     config.vm.define "guest_box" do |box|
 
         # set up host only adapter for horizon        
-        box.vm.network "private_network", ip: ENV['VAGRANT_DEVSTACK_HOST_IP']
+        box.vm.network "private_network", ip: "172.18.161.6"
 
         # configure the box instancd
         box.vm.provider "virtualbox" do |instance|
@@ -50,7 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # run ansible on guest, see devstack_box.yml
         box.vm.provision "ansible" do |ansible|
             
-            ansible.playbook = "devstack_box.yml"
+            ansible.playbook = "devstack-box.yml"
             ansible.verbose  = true
             ansible.groups = {
                 "guests" => ["guest_box"]
