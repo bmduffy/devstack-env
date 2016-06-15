@@ -49,10 +49,3 @@
             owner=stack 
             group=stack 
             mode=0755
-
-    # - name: Run stack.sh to build devstack
-    #   shell: ./stack.sh
-    #   args: 
-    #     chdir: /opt/devstack/
-    #   become: yes
-    #   become_user: stack

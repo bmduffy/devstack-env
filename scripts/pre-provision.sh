@@ -1,5 +1,5 @@
 #!/bin/bash
 
-source ./.env
+source "$(pwd)/.env"
 
 echo "Running pre provisioning ..."
