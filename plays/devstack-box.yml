@@ -7,16 +7,17 @@
 
   vars:
     # password must be hashed, see below
+    workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
     password: pass
     nopass:   "stack ALL=(ALL) NOPASSWD:ALL"
-    
+
   tasks: 
 
     - name: Upgrade all packages
       yum: name=* state=latest
 
     - name: Install relevant packages
-      yum: name={{item}} state=present
+      yum: name={{ item }} state=present
       with_items:
         - sudo
         - vim
@@ -35,11 +36,14 @@
                   line="{{ nopass }}"
                   state=present
 
-    - name: Ensure '/opt/devstack' is present
-      file: path=/opt/devstack
+    - name: Ensure work directories are present
+      file: path="/opt/{{ item }}"
             owner=stack
             state=directory 
             mode="u=rwx,g=rx,o=rx"
+      with_items:
+        - devstack
+        - stack
 
     - name: Clone devstack
       git: repo=https://git.openstack.org/openstack-dev/devstack
@@ -48,7 +52,7 @@
       become_user: stack
 
     - name: Copy minimal configuration for devstack
-      copy: src=local.conf 
+      copy: src="{{ workspace }}/local.conf" 
             dest=/opt/devstack/local.conf 
             owner=stack 
             group=stack 

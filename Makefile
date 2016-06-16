@@ -28,6 +28,9 @@ install:
 env:
 	vagrant up
 
+retry: 
+	vagrant provision
+
 stack:
 	echo "ssh -t ${VD_ENV_HOSTNAME} bash /opt/devstack/stack.sh"
 
@@ -35,7 +38,9 @@ unstack:
 	echo "ssh -t ${VD_ENV_HOSTNAME} /opt/devstack/unstack.sh"
 
 reconfig:
-	echo "scp "
+	echo "scp local.config ${VD_ENV_DEVSTACK_MOUNT}"
+	echo "unstack"
+	echo "stack"
 
 clean:
 	vagrant destroy
