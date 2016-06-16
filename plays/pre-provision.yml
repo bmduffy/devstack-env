@@ -25,13 +25,13 @@
         block: |
           GUEST_IP={{ guest_ip }}
 
-    - name: Create devstack directory where devstack on the VM will be mounted 
+    - name: "Create '{{ workspace }}/devstack'" 
       file: path="{{ workspace }}/devstack"
             state=directory
       become: yes
       become_user: "{{ user }}"
 
-    - name: Create stack directory where the stack source on the VM will be mounted
+    - name: "Create '{{ workspace }}/stack'"
       file: path="{{ workspace }}/stack"
             state=directory
       become: yes

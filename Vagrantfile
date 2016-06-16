@@ -19,30 +19,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # scripts to run on host on vagrant up + destroy
 
     config.trigger.before :up do
-        info "Set /etc/host info ..."
-        run "sh ./scripts/pre-provision.sh"
+        info "Set up host environment"
+        run "ansible-playbook ./plays/pre-provision.yml"
     end
 
     config.trigger.after :up do
-        info "Mount /opt/devstack/ on guest to ./devstack/ on host ..."
-        run "sh ./scripts/post-provision.sh"
+        info "Mount directories and configure ssh"
+        run "ansible-playbook ./plays/post-provision.yml"
     end
 
     config.trigger.after :provision do
-        info "Mount /opt/devstack/ on guest to ./devstack/ on host ..."
-        run "sh ./scripts/post-provision.sh"
+        info "Mount directories and configure ssh"
+        run "ansible-playbook ./plays/post-provision.yml"
     end
 
     config.trigger.after :destroy do
         info "Clean up host after VM destroyed ..."
-        run "sh ./scripts/clean-up.sh"
+        run "ansible-playbook ./plays/clean-up.yml"
     end 
 
     config.vm.define "guest_box" do |box|
 
         # set up host only adapter for horizon
-        ipaddr = ENV['VAGRANT_DEVSTACK_HOST_IP']
-        box.vm.network "private_network", ip: "172.18.161.6"
+        ipaddr = ENV['GUEST_IP']
+        box.vm.network "private_network", ip: "#{ipaddr}"
 
         # configure the box instancd
         box.vm.provider "virtualbox" do |instance|

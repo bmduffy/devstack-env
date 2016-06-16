@@ -24,12 +24,9 @@ export VD_ENV_DEFAULT_RSA_KEY = ${HOME}/.ssh/id_rsa.pub
 
 install:
 	echo "this will execute a script to install everything you need"
-	echo "it will also create the env file"
 
 environment:
-	echo "this will run with vagrant up"
-	ansible-playbook plays/pre-provision.yml
-	ansible-playbook plays/post-provision.yml
+	vagrant up
 
 stack:
 	echo "ssh -t devstack-box bash /opt/devstack/stack.sh"
@@ -38,4 +35,5 @@ unstack:
 	echo "ssh -t devstack-box bash /opt/devstack/unstack.sh"
 
 clean:
-	echo "clean up mess"
+	vagrant destroy
+	rm plays/*.retry

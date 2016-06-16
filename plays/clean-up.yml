@@ -1,0 +1,51 @@
+---
+- name: Play that does post-provisioning configuration on the host
+  
+  hosts: 127.0.0.1
+  connection: local
+  remote_user: root
+
+  vars:
+
+    workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
+    hostname:  "{{ lookup('env', 'VD_ENV_HOSTNAME')}}"
+    guest_ip:  "{{ lookup('env', 'VD_ENV_GUEST_IP') }}"
+
+    ssh_config:      "{{ lookup('env', 'VD_ENV_SSH_CONFIG') }}"
+    known_hosts:     "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
+    default_rsa_key: "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+
+  tasks:
+
+    - name: Remove .env file 
+      file: path="{{ workspace }}/.env"
+            state=absent
+
+    - name: "Unnount '{{ workspace }}/devstack'"
+      shell: "fusermount -u {{ workspace }}/devstack"
+
+    - name: "Unmount '{{ workspace }}/stack'"
+      shell: "fusermount -u {{ workspace }}/stack" 
+
+    - name: "Remove '{{ workspace }}/devstack'" 
+      file: path="{{ workspace }}/devstack"
+            state=absent
+
+    - name: "Remove '{{ workspace }}/stack'"
+      file: path="{{ workspace }}/stack"
+            state=absent
+
+    - name: "Ensure '{{ known_hosts }}' is clean"
+      lineinfile: dest="{{ known_hosts }}" 
+                  regexp="^({{ guest_ip }}|{{ hostname }})"
+                  state=absent
+
+    - name: "Remove '{{ hostname }}' config to '{{ ssh_config }}'"
+      blockinfile:
+        dest: "{{ ssh_config }}"
+        block: |
+          Host {{ hostname }}                          
+            Hostname     {{ guest_ip }}            
+            User         stack
+            IdentityFile {{ default_rsa_key }}
+        state: absent

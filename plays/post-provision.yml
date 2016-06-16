@@ -28,14 +28,15 @@
             Hostname     {{ guest_ip }}            
             User         stack
             IdentityFile {{ default_rsa_key }}
+        state: present
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       lineinfile: dest="{{ known_hosts }}" 
                   regexp="^({{ guest_ip }}|{{ hostname }})"
                   state=absent
 
-    - name: "Mounting {{ guest_devstack_mount }} to {{ workspace }}/devstack"
+    - name: "Mount '{{ guest_devstack_mount }}'' to '{{ workspace }}/devstack'"
       shell: "sshfs {{ guest_devstack_mount }} {{ workspace }}/devstack"
 
-    - name: "Mounting {{ guest_stack_mount }} to {{ workspace }}/stack"
+    - name: "Mount '{{ guest_stack_mount }}' to '{{ workspace }}/stack'"
       shell: "sshfs {{ guest_stack_mount }} {{ workspace }}/stack"
