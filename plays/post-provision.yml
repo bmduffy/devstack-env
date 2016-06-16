@@ -34,9 +34,19 @@
       lineinfile: dest="{{ known_hosts }}" 
                   regexp="^({{ guest_ip }}|{{ hostname }})"
                   state=absent
+    
+    - name: "Check fstabs for {{ workspace }}/devstack"
+      shell: "mount | grep {{ workspace }}/devstack" 
+      register: devstack_fstab
+
+    - name: "Check fstabs for {{ workspace }}/stack"
+      shell: "mount | grep {{ workspace }}/stack" 
+      register: stack_fstab
 
     - name: "Mount '{{ guest_devstack_mount }}'' to '{{ workspace }}/devstack'"
       shell: "sshfs {{ guest_devstack_mount }} {{ workspace }}/devstack"
+      when: devstack_fstab == ""
 
     - name: "Mount '{{ guest_stack_mount }}' to '{{ workspace }}/stack'"
       shell: "sshfs {{ guest_stack_mount }} {{ workspace }}/stack"
+      when: devstack_fstab == ""
