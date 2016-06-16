@@ -6,7 +6,7 @@ this environment.
 
 ### Prerequisites
 
-You can choose any VM software you like. I pefer VirtualBox, I have had more experience with it, and it seems to play 
+**Install VirtualBox:** You can choose any VM software you like. I pefer VirtualBox, I have had more experience with it, and it seems to play 
 well with Centos 7. The following steps worked for me when installing VirtualBox. 
 
 For more information go
@@ -42,7 +42,7 @@ yum install VirtualBox-5.0
 usermod -a -G vboxusers Brian ## CHANGE: insert your username here
 ```
 
-You will also need to install Vagrant, which will use whatever virtualization software you tell it to. For more information
+**Install Vagrant:** You will also need to install Vagrant, which will use whatever virtualization software you tell it to. For more information
 about why using Vagrant might be a good idea go [here](https://www.vagrantup.com/docs/why-vagrant/).
 
 Get the latest Vagrant RPM [here](https://www.vagrantup.com/downloads.html).
@@ -60,6 +60,12 @@ whereis vagrant
 vagrant plugin install vagrant-vbguest
 vagrant plugin install vagrant-triggers
 vagrant plugin install vagrant-env
+```
+
+**Install Ansible:** This Vagrantfile is using Ansible for provisioning of the VM and the host machine.
+
+```
+  sudo yum install -y ansible
 ```
 
 ### How to Use

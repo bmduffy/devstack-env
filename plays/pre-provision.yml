@@ -4,16 +4,32 @@
   connection: local
   remote_user: root
 
+  vars:
+    user:            "{{ lookup('env', 'USER') }}"
+    home:            "{{ lookup('env', 'HOME') }}"
+    host_ip:         "172.18.161.6"
+    hostname:        "devstack-box"
+    devstack_mount:  "devstack-box:/opt/devstack" 
+    stack_mount:     "devstack-box:/opt/stack"
+    ssh_config:      "{{ home }}/.ssh/config"
+    ssh_known_hosts: "{{ home }}/.ssh/known_hosts"
+    rsa_key:         "{{ home }}/.ssh/id_rsa.pub"
+    workspace:       "/home/Brian/Workspace/OpenSource/devstack-env"
+
   tasks: 
 
-    - name: Export all environment variables
-      shell: bash /home/Brian/Workspace/OpenSource/devstack-env/environment
+    - name: Determine workspace 
+      command: pwd
+      register: working
 
     - name: Output the current user
-      debug: msg="current user is '{{ lookup('env', 'USER') }}'"
+      debug: msg="current user is '{{ user }}'"
+
+    - name: Output the ssh config file
+      debug: msg="current ssh config '' "
 
     - name: Output the current workspace
-      debug: msg="current workspace is '{{ lookup('env', 'VAGRANT_DEVSTACK_WORKSPACE') }}'"
+      debug: msg="current workspace is {{ workspace }}"
     
     - name: Create a test file 
       file: path=/opt/stupid_test_file 
@@ -22,7 +38,7 @@
             mode=0777
 
     - name: Install relevant packages on host
-      yum: name={{item}} state=present
+      yum: name={{ item }} state=present
       with_items:
         - sudo
         - sshfs

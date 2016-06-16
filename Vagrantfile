@@ -59,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # run ansible on guest, see devstack_box.yml
         box.vm.provision "ansible" do |ansible|
             
-            ansible.playbook = "devstack-box.yml"
+            ansible.playbook = "./plays/devstack-box.yml"
             ansible.verbose  = true
             ansible.groups = {
                 "guests" => ["guest_box"]

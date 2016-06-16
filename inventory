@@ -1,0 +1,8 @@
+host_box ansible_connection=local
+guest_box ansible_connection=172.18.161.6
+
+[hosts]
+host_box
+
+[guests]
+guest_box
