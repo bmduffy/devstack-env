@@ -25,7 +25,7 @@ export VD_ENV_DEFAULT_RSA_KEY = ${HOME}/.ssh/id_rsa.pub
 install:
 	echo "this will execute a script to install everything you need"
 
-environment:
+env:
 	vagrant up
 
 stack:

@@ -1,12 +1,15 @@
 ---
 - name: Play that provisions the guest VM environment for devstack
+  
   hosts: guests
   remote_user: root
+  sudo: true
 
   vars:
     # password must be hashed, see below
     password: pass
     nopass:   "stack ALL=(ALL) NOPASSWD:ALL"
+    
   tasks: 
 
     - name: Upgrade all packages
