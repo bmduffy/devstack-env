@@ -29,10 +29,13 @@ env:
 	vagrant up
 
 stack:
-	echo "ssh -t devstack-box bash /opt/devstack/stack.sh"
+	echo "ssh -t ${VD_ENV_HOSTNAME} bash /opt/devstack/stack.sh"
 
 unstack:
-	echo "ssh -t devstack-box bash /opt/devstack/unstack.sh"
+	echo "ssh -t ${VD_ENV_HOSTNAME} /opt/devstack/unstack.sh"
+
+reconfig:
+	echo "scp "
 
 clean:
 	vagrant destroy

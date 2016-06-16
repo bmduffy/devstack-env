@@ -20,29 +20,29 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.trigger.before :up do
         info "Set up host environment"
-        run "ansible-playbook ./plays/pre-provision.yml"
+        run "ansible-playbook ./plays/pre-provision.yml -vvv"
     end
 
     config.trigger.after :up do
         info "Mount directories and configure ssh"
-        run "ansible-playbook ./plays/post-provision.yml"
+        run "ansible-playbook ./plays/post-provision.yml -vvv"
     end
 
     config.trigger.after :provision do
         info "Mount directories and configure ssh"
-        run "ansible-playbook ./plays/post-provision.yml"
+        run "ansible-playbook ./plays/post-provision.yml -vvv"
     end
 
     config.trigger.after :destroy do
         info "Clean up host after VM destroyed ..."
-        run "ansible-playbook ./plays/clean-up.yml"
+        run "ansible-playbook ./plays/clean-up.yml -vvv"
     end 
 
     config.vm.define "guest_box" do |box|
 
         # set up host only adapter for horizon
         ipaddr = ENV['GUEST_IP']
-        box.vm.network "private_network", ip: "#{ipaddr}"
+        box.vm.network "private_network", ip: "172.18.161.6"
 
         # configure the box instancd
         box.vm.provider "virtualbox" do |instance|
