@@ -7,13 +7,35 @@
 
   vars:
 
-    user:      "{{ lookup('env', 'USER') }}"
     workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
     hostname:  "{{ lookup('env', 'VD_ENV_HOSTNAME')}}"
+    guest_ip:  "{{ lookup('env', 'VD_ENV_GUEST_IP') }}"
 
-    ssh_config: "{{ lookup('env', ) }}"
-    rsa_key:    "{{ lookup('env', 'VD_ENV_HOSTNAME')}}"
+    ssh_config:      "{{ lookup('env', 'VD_ENV_SSH_CONFIG') }}"
+    known_hosts:     "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
+    default_rsa_key: "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+
+    guest_devstack_mount: "{{ lookup('env', 'VD_ENV_DEVSTACK_MOUNT') }}"
+    guest_stack_mount:    "{{ lookup('env', 'VD_ENV_STACK_MOUNT') }}"
 
   tasks:
 
-    - name:   
+    - name: "Add '{{ hostname }}' config to '{{ ssh_config }}'"
+      blockinfile:
+        dest: "{{ ssh_config }}"
+        block: |
+          Host {{ hostname }}                          
+            Hostname     {{ guest_ip }}            
+            User         stack
+            IdentityFile {{ default_rsa_key }}
+
+    - name: "Ensure '{{ known_hosts }}' is clean"
+      lineinfile: dest="{{ known_hosts }}" 
+                  regexp="^({{ guest_ip }}|{{ hostname }})"
+                  state=absent
+
+    - name: "Mounting {{ guest_devstack_mount }} to {{ workspace }}/devstack"
+      shell: "sshfs {{ guest_devstack_mount }} {{ workspace }}/devstack"
+
+    - name: "Mounting {{ guest_stack_mount }} to {{ workspace }}/stack"
+      shell: "sshfs {{ guest_stack_mount }} {{ workspace }}/stack"

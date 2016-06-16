@@ -6,8 +6,7 @@
   vars:
     # password must be hashed, see below
     password: pass
-    nopasswd: stack ALL=(ALL) NOPASSWD:ALL
-
+    nopass:   "stack ALL=(ALL) NOPASSWD:ALL"
   tasks: 
 
     - name: Upgrade all packages
@@ -29,7 +28,9 @@
             password={{ password |password_hash('sha512') }} 
 
     - name: Ensure 'stack' user can execute passwordless commands
-      shell: if [[ $(grep -o "{{ nopasswd }}" /etc/sudoers | wc -l) -eq "0" ]]; then echo "{{ nopasswd }}" >> /etc/sudoers; fi 
+      lineinfile: dest=/etc/sudoers
+                  line="{{ nopass }}"
+                  state=present
 
     - name: Ensure '/opt/devstack' is present
       file: path=/opt/devstack
