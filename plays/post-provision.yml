@@ -19,7 +19,7 @@
 
   tasks:
 
-    - name: "Add '{{ hostname }}' config to '{{ ssh_config }}'"
+    - name: "Add '{{ host }}' config to '{{ ssh_config }}'"
       blockinfile:
         dest: "{{ ssh_config }}"
         block: |
@@ -31,20 +31,20 @@
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       lineinfile: dest="{{ known_hosts }}" 
-                  regexp="^({{ guest_ip }}|{{ hostname }})"
+                  regexp="^({{ ip }}|{{ host }})"
                   state=absent
-    
-    - name: "Check fstabs for {{ workspace }}/devstack"
-      shell: "mount | grep {{ workspace }}/devstack" 
-      register: dtab
 
-    - name: "Check fstabs for {{ workspace }}/stack"
-      shell: "mount | grep {{ workspace }}/stack" 
-      register: stab
-
-    - name: "Mount directories"
-      shell: "sshfs {{ hostname }}:{{ item.mount }} {{workspace}}/{{ item.folder }}"
+    - name: "Remove old mounts in {{ workspace }}"
+      mount: name="{{ workspace }}/{{ item }}"
+             src=none
+             fstype=none
+             state=unmounted
       with_items:
-        - { mount: '{{ dmnt }}', folder: 'devstack', fstab: '{{ dtab }}' }
-        - { mount: '{{ smnt }}', folder: 'stack',    fstab: '{{ stab }}' }
-      when: item.fstab.rc == 0                                                               
+        - devstack
+        - stack
+
+    - name: "Mount|Remount directories in {{ workspace }}"
+      shell: "sshfs {{ host }}:{{ item.mount }} {{ workspace }}/{{ item.folder }}"
+      with_items:
+        - { mount: '{{ dmnt }}', folder: 'devstack' }
+        - { mount: '{{ smnt }}', folder: 'stack'    }                                                              

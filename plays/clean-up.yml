@@ -45,10 +45,10 @@
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       lineinfile: dest="{{ known_hosts }}" 
-                  regexp="^({{ guest_ip }}|{{ hostname }})"
+                  regexp="^({{ ip }}|{{ host }})"
                   state=absent
 
-    - name: "Remove '{{ hostname }}' config to '{{ ssh_config }}'"
+    - name: "Remove '{{ host }}' config to '{{ ssh_config }}'"
       blockinfile:
         dest: "{{ ssh_config }}"
         block: |

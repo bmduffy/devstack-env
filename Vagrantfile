@@ -20,27 +20,27 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.trigger.before :up do
         info "Set up host environment"
-        run "ansible-playbook ./plays/pre-provision.yml -vvv"
+        run "ansible-playbook ./plays/pre-provision.yml -v"
     end
 
     config.trigger.after :up do
         info "Mount directories and configure ssh"
-        run "ansible-playbook ./plays/post-provision.yml -vvv"
+        run "ansible-playbook ./plays/post-provision.yml -v"
     end
 
     config.trigger.before :provision do
         info "Mount directories and configure ssh"
-        run "ansible-playbook ./plays/pre-provision.yml -vvv"
+        run "ansible-playbook ./plays/pre-provision.yml -v"
     end
 
     config.trigger.after :provision do
         info "Mount directories and configure ssh"
-        run "ansible-playbook ./plays/post-provision.yml -vvv"
+        run "ansible-playbook ./plays/post-provision.yml -v"
     end
 
     config.trigger.after :destroy do
         info "Clean up host after VM destroyed ..."
-        run "ansible-playbook ./plays/clean-up.yml -vvv"
+        run "ansible-playbook ./plays/clean-up.yml -v"
     end 
 
     config.vm.define "guest_box" do |box|
