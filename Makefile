@@ -29,7 +29,7 @@ all:
 
 retry:
 	ansible-playbook -v ./plays/pre-provision.yml 
-	vagrant reload
+	#vagrant reload
 	vagrant provision
 	ansible-playbook -vvv ./plays/post-provision.yml
 

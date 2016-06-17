@@ -3,7 +3,6 @@
 
   hosts: 127.0.0.1
   connection: local
-  remote_user: root
 
   vars:
 
@@ -41,14 +40,20 @@
       shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/devstack"
+      become: yes
+      become_user: root
 
     - name: "Unmount stack"
       shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/stack" 
+      become: yes
+      become_user: root
 
     - name: Install relevant packages on host
       yum: name={{ item }} state=present
       with_items:
         - sudo
         - sshfs
+      become: yes
+      become_user: root

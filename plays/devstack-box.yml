@@ -34,11 +34,15 @@
             append=yes 
             state=present 
             password={{ password |password_hash('sha512') }} 
+      become: yes
+      become_user: root
 
     - name: Ensure 'stack' user can execute passwordless commands
       lineinfile: dest=/etc/sudoers
                   line="{{ nopass }}"
                   state=present
+      become: yes
+      become_user: root
 
     - name: Ensure work directories are present
       file: path="/opt/{{ item }}"
@@ -48,6 +52,8 @@
       with_items:
         - devstack
         - stack
+      become: yes
+      become_user: root
 
     - name: Clone devstack
       git: repo=https://git.openstack.org/openstack-dev/devstack
@@ -56,7 +62,9 @@
       become_user: stack
     
     - name: Add ssh key
-      authorized_key: user=stack key="{{ key }}"
+      authorized_key: user=stack key="{{ lookup('file', '{{ key }}') }}"
+      become: yes
+      become_user: root
 
     - name: Copy minimal configuration for devstack
       copy: src="{{ workspace }}/local.conf" 
@@ -64,3 +72,5 @@
             owner=stack 
             group=stack 
             mode=0755
+      become: yes
+      become_user: root

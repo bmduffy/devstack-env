@@ -3,7 +3,6 @@
   
   hosts: 127.0.0.1
   connection: local
-  remote_user: root
 
   vars:
 
@@ -20,10 +19,6 @@
     - name: Remove .env file 
       file: path="{{ workspace }}/.env"
             state=absent 
-    
-    - name: "WHAT THE ACTUAL FUCK"
-      debug: msg="{{ item }}"
-      with_items: "{{ ansible_mounts }}"
 
     - name: "Unmount devstack"
       shell: "fusermount -z -u {{ item.mount }}"
@@ -34,6 +29,8 @@
       shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/stack"
+      become: yes
+      become_user: root
 
     - name: "Remove directories" 
       file: path="{{ workspace }}/{{ item }}"
@@ -41,6 +38,8 @@
       with_items:
         - devstack
         - stack
+      become: yes
+      become_user: root
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       known_hosts: path="{{ known_hosts }}"
@@ -62,3 +61,5 @@
             IdentityFile {{ key }}
             StrictHostKeyChecking no
         state: absent
+      become: yes
+      become_user: root

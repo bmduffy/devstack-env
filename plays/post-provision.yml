@@ -31,6 +31,8 @@
             IdentityFile {{ key }}
             StrictHostKeyChecking no
         state: present
+      become: yes
+      become_user: root
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       known_hosts: path="{{ known_hosts }}"
@@ -39,9 +41,13 @@
       with_items:
         - "{{ ip   }}"
         - "{{ host }}"
+      become: yes
+      become_user: root
 
     - name: "Mount directories in {{ workspace }}"
-      shell: "sshpass -p 'pass' sshfs {{ item.mount }} {{ item.folder }}"
+      shell: "sshfs {{ item.mount }} {{ item.folder }}"
       with_items:
         - { mount: '{{ host }}:{{ dmnt }}', folder: '{{ workspace }}/devstack' }
         - { mount: '{{ host }}:{{ smnt }}', folder: '{{ workspace }}/stack'    }
+      become: yes
+      become_user: root
