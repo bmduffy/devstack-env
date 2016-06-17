@@ -19,7 +19,6 @@ export VD_ENV_SSH_CONFIG      = ${HOME}/.ssh/config
 export VD_ENV_SSH_KNOWN_HOSTS = ${HOME}/.ssh/known_hosts
 export VD_ENV_DEFAULT_RSA_KEY = ${HOME}/.ssh/id_rsa.pub
 
-
 # Goals we want our makefile to manage
 
 all:
@@ -33,10 +32,10 @@ retry:
 	vagrant provision
 	ansible-playbook -vvv ./plays/post-provision.yml
 
-stack:
+stack-up:
 	ssh -t ${VD_ENV_HOSTNAME} bash /opt/devstack/stack.sh
 
-unstack:
+stack-down:
 	ssh -t ${VD_ENV_HOSTNAME} /opt/devstack/unstack.sh
 
 reconfig:

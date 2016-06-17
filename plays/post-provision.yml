@@ -3,9 +3,6 @@
   
   hosts: 127.0.0.1
   connection: local
-  remote_user: root
-
-  sudo: true
 
   vars:
 
@@ -26,10 +23,10 @@
         dest: "{{ ssh_config }}"
         block: |
           Host {{ host }}                          
-            Hostname     {{ ip }}            
-            User         stack
-            IdentityFile {{ key }}
-            StrictHostKeyChecking no
+            Hostname              {{ ip }}            
+            User                    stack
+            IdentityFile          {{ key }}
+            StrictHostKeyChecking    no
         state: present
       become: yes
       become_user: root
@@ -49,5 +46,3 @@
       with_items:
         - { mount: '{{ host }}:{{ dmnt }}', folder: '{{ workspace }}/devstack' }
         - { mount: '{{ host }}:{{ smnt }}', folder: '{{ workspace }}/stack'    }
-      become: yes
-      become_user: root

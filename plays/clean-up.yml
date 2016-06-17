@@ -56,10 +56,10 @@
         dest: "{{ ssh_config }}"
         block: |
           Host {{ host }}                          
-            Hostname     {{ ip }}            
-            User         stack
-            IdentityFile {{ key }}
-            StrictHostKeyChecking no
+            Hostname              {{ ip }}            
+            User                    stack
+            IdentityFile          {{ key }}
+            StrictHostKeyChecking    no
         state: absent
       become: yes
       become_user: root

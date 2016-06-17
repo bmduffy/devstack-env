@@ -16,33 +16,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder ".", "/vagrant", disabled: true
     config.vm.synced_folder ".", "/home/vagrant/sync", disabled: true
 
-    # # scripts to run on host on vagrant up + destroy
-
-    # config.trigger.before :up do
-    #     info "Set up host environment"
-    #     run "ansible-playbook ./plays/pre-provision.yml -v"
-    # end
-
-    # config.trigger.after :up do
-    #     info "Mount directories and configure ssh"
-    #     run "ansible-playbook ./plays/post-provision.yml -v"
-    # end
-
-    # config.trigger.before :provision do
-    #     info "Mount directories and configure ssh"
-    #     run "ansible-playbook ./plays/pre-provision.yml -v"
-    # end
-
-    # config.trigger.after :provision do
-    #     info "Mount directories and configure ssh"
-    #     run "ansible-playbook ./plays/post-provision.yml -v"
-    # end
-
-    # config.trigger.after :destroy do
-    #     info "Clean up host after VM destroyed ..."
-    #     run "ansible-playbook ./plays/clean-up.yml -v"
-    # end 
-
     config.vm.define "guest_box" do |box|
 
         # set up host only adapter for horizon
