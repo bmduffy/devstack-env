@@ -1,17 +1,20 @@
 ---
-- name: Play that does pre-provisioning configuration on the host
+- name: Pre-provisioning configuration on host
 
   hosts: 127.0.0.1
   connection: local
-  remote_user: "{{ lookup('env', 'USER') }}"
+  remote_user: root
 
   sudo: true
 
   vars:
 
+    ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
+    key:  "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+    host: "{{ lookup('env', 'VD_ENV_HOSTNAME')        }}"
+
     user:      "{{ lookup('env', 'USER') }}"
     workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
-    guest_ip:  "{{ lookup('env', 'VD_ENV_GUEST_IP') }}"
 
   tasks: 
 
@@ -25,7 +28,7 @@
       blockinfile:
         dest: "{{ workspace }}/.env"
         block: |
-          GUEST_IP={{ guest_ip }}
+          GUEST_IP={{ ip }}
 
     - name: "Create '{{ workspace }}/devstack'" 
       file: path="{{ workspace }}/{{ item }}"
@@ -35,6 +38,16 @@
         - stack
       become: yes
       become_user: "{{ user }}"
+
+    - name: "Unmount devstack"
+      shell: "fusermount -z {{ item.mount }}"
+      with_items: "{{ ansible_mounts }}"
+      when: item.mount == "{{ workspace }}/devstack"
+
+    - name: "Unmount stack"
+      shell: "fusermount -z {{ item.mount }}"
+      with_items: "{{ ansible_mounts }}"
+      when: item.mount == "{{ workspace }}/stack" 
 
     - name: Install relevant packages on host
       yum: name={{ item }} state=present

@@ -3,7 +3,7 @@
   
   hosts: 127.0.0.1
   connection: local
-  remote_user: "{{ lookup('env', 'USER') }}"
+  remote_user: root
 
   sudo: true
 
@@ -29,20 +29,12 @@
             Hostname     {{ ip }}            
             User         stack
             IdentityFile {{ key }}
-            StrictHostKeyChecking no
         state: present
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       lineinfile: dest="{{ known_hosts }}" 
                   regexp="^({{ ip }}|{{ host }})"
                   state=absent
-
-    - name: "Check if unmount directories in {{ workspace }} is needed"
-      shell: "fusermount -u {{ workspace }}/{{ item }}"
-      with_items:
-        - devstack
-        - stack
-      ignore_errors: yes
 
     - name: "Mount directories in {{ workspace }}"
       shell: "sshfs {{ host }}:{{ item.mount }} {{ workspace }}/{{ item.folder }}"
