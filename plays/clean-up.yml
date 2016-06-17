@@ -1,9 +1,11 @@
 ---
-- name: Play that cleans up directories after vagrant destroy
+- name: Cleans up ssh config and directories
   
   hosts: 127.0.0.1
   connection: local
-  remote_user: root
+  remote_user: "{{ lookup('env', 'USER') }}"
+
+  sudo: true
 
   vars:
 
@@ -21,27 +23,12 @@
       file: path="{{ workspace }}/.env"
             state=absent 
     
-    - name: "Check fstabs for {{ workspace }}/devstack"
-      shell: "mount | grep {{ workspace }}/devstack" 
-      register: dtab
-
-    - name: "Check fstabs for {{ workspace }}/stack"
-      shell: "mount | grep {{ workspace }}/stack" 
-      register: stab
-
-    - name: "Unmount directories"
-      shell: "fusermount -u {{ workspace }}/{{ item.folder }}"
-      with_items:
-        - { folder: 'devstack', fstab: '{{ dtab }}' }
-        - { folder: 'stack',    fstab: '{{ stab }}' }
-      when: item.fstab.rc == 0
-
-    - name: "Remove '{{ workspace }}/devstack'" 
-      file: path="{{ workspace }}/{{ item }}"
-            state=absent
+    - name: "Unmount directories in {{ workspace }}"
+      shell: "fusermount -u {{ workspace }}/{{ item }}"
       with_items:
         - devstack
         - stack
+      ignore_errors: yes
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       lineinfile: dest="{{ known_hosts }}" 
@@ -56,4 +43,5 @@
             Hostname     {{ ip }}            
             User         stack
             IdentityFile {{ key }}
+            StrictHostKeyChecking no
         state: absent

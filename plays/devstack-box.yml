@@ -7,9 +7,11 @@
 
   vars:
     # password must be hashed, see below
+    user:      "{{ lookup('env', 'USER') }}"
+    key:       "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
     workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
-    password: pass
-    nopass:   "stack ALL=(ALL) NOPASSWD:ALL"
+    password:  "pass"
+    nopass:    "stack ALL=(ALL) NOPASSWD:ALL"
 
   tasks: 
 
@@ -57,3 +59,4 @@
             owner=stack 
             group=stack 
             mode=0755
+

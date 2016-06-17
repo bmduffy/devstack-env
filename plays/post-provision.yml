@@ -1,15 +1,17 @@
 ---
-- name: Play that does post-provisioning configuration on the host
+- name: Post-provisioning configuration on host
   
   hosts: 127.0.0.1
   connection: local
-  remote_user: root
+  remote_user: "{{ lookup('env', 'USER') }}"
+
+  sudo: true
 
   vars:
 
     ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
-    host: "{{ lookup('env', 'VD_ENV_HOSTNAME')        }}"
     key:  "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+    host: "{{ lookup('env', 'VD_ENV_HOSTNAME')        }}"
     dmnt: "{{ lookup('env', 'VD_ENV_DEVSTACK_MOUNT')  }}"
     smnt: "{{ lookup('env', 'VD_ENV_STACK_MOUNT')     }}"
 
@@ -27,6 +29,7 @@
             Hostname     {{ ip }}            
             User         stack
             IdentityFile {{ key }}
+            StrictHostKeyChecking no
         state: present
 
     - name: "Ensure '{{ known_hosts }}' is clean"
@@ -34,17 +37,15 @@
                   regexp="^({{ ip }}|{{ host }})"
                   state=absent
 
-    - name: "Remove old mounts in {{ workspace }}"
-      mount: name="{{ workspace }}/{{ item }}"
-             src=none
-             fstype=none
-             state=unmounted
+    - name: "Check if unmount directories in {{ workspace }} is needed"
+      shell: "fusermount -u {{ workspace }}/{{ item }}"
       with_items:
         - devstack
         - stack
+      ignore_errors: yes
 
-    - name: "Mount|Remount directories in {{ workspace }}"
+    - name: "Mount directories in {{ workspace }}"
       shell: "sshfs {{ host }}:{{ item.mount }} {{ workspace }}/{{ item.folder }}"
       with_items:
         - { mount: '{{ dmnt }}', folder: 'devstack' }
-        - { mount: '{{ smnt }}', folder: 'stack'    }                                                              
+        - { mount: '{{ smnt }}', folder: 'stack'    }                                                               

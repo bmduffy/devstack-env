@@ -23,10 +23,14 @@ export VD_ENV_DEFAULT_RSA_KEY = ${HOME}/.ssh/id_rsa.pub
 # Goals we want our makefile to manage
 
 env:
+	ansible-playbook -v ./plays/pre-provision.yml
 	vagrant up
+	ansible-playbook -v ./plays/post-provision.yml
 
 retry:
+	ansible-playbook -v ./plays/pre-provision.yml 
 	vagrant provision
+	ansible-playbook -vvv ./plays/post-provision.yml
 
 stack:
 	ssh -t ${VD_ENV_HOSTNAME} bash /opt/devstack/stack.sh
@@ -41,4 +45,5 @@ reconfig:
 
 clean:
 	vagrant destroy
+	ansible-playbook -v ./plays/clean-up.yml
 	rm plays/*.retry
