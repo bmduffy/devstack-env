@@ -28,6 +28,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         run "ansible-playbook ./plays/post-provision.yml -vvv"
     end
 
+    config.trigger.before :provision do
+        info "Mount directories and configure ssh"
+        run "ansible-playbook ./plays/pre-provision.yml -vvv"
+    end
+
     config.trigger.after :provision do
         info "Mount directories and configure ssh"
         run "ansible-playbook ./plays/post-provision.yml -vvv"

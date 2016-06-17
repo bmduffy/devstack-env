@@ -7,16 +7,15 @@
 
   vars:
 
-    workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
-    hostname:  "{{ lookup('env', 'VD_ENV_HOSTNAME')}}"
-    guest_ip:  "{{ lookup('env', 'VD_ENV_GUEST_IP') }}"
+    ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
+    host: "{{ lookup('env', 'VD_ENV_HOSTNAME')        }}"
+    key:  "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+    dmnt: "{{ lookup('env', 'VD_ENV_DEVSTACK_MOUNT')  }}"
+    smnt: "{{ lookup('env', 'VD_ENV_STACK_MOUNT')     }}"
 
-    ssh_config:      "{{ lookup('env', 'VD_ENV_SSH_CONFIG') }}"
-    known_hosts:     "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
-    default_rsa_key: "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
-
-    guest_devstack_mount: "{{ lookup('env', 'VD_ENV_DEVSTACK_MOUNT') }}"
-    guest_stack_mount:    "{{ lookup('env', 'VD_ENV_STACK_MOUNT') }}"
+    ssh_config:  "{{ lookup('env', 'VD_ENV_SSH_CONFIG')      }}"
+    known_hosts: "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
+    workspace:   "{{ lookup('env', 'VD_ENV_WORKSPACE')       }}"
 
   tasks:
 
@@ -24,10 +23,10 @@
       blockinfile:
         dest: "{{ ssh_config }}"
         block: |
-          Host {{ hostname }}                          
-            Hostname     {{ guest_ip }}            
+          Host {{ host }}                          
+            Hostname     {{ ip }}            
             User         stack
-            IdentityFile {{ default_rsa_key }}
+            IdentityFile {{ key }}
         state: present
 
     - name: "Ensure '{{ known_hosts }}' is clean"
@@ -37,16 +36,15 @@
     
     - name: "Check fstabs for {{ workspace }}/devstack"
       shell: "mount | grep {{ workspace }}/devstack" 
-      register: devstack_fstab
+      register: dtab
 
     - name: "Check fstabs for {{ workspace }}/stack"
       shell: "mount | grep {{ workspace }}/stack" 
-      register: stack_fstab
+      register: stab
 
-    - name: "Mount '{{ guest_devstack_mount }}'' to '{{ workspace }}/devstack'"
-      shell: "sshfs {{ guest_devstack_mount }} {{ workspace }}/devstack"
-      when: devstack_fstab == ""
-
-    - name: "Mount '{{ guest_stack_mount }}' to '{{ workspace }}/stack'"
-      shell: "sshfs {{ guest_stack_mount }} {{ workspace }}/stack"
-      when: devstack_fstab == ""
+    - name: "Mount directories"
+      shell: "sshfs {{ hostname }}:{{ item.mount }} {{workspace}}/{{ item.folder }}"
+      with_items:
+        - { mount: '{{ dmnt }}', folder: 'devstack', fstab: '{{ dtab }}' }
+        - { mount: '{{ smnt }}', folder: 'stack',    fstab: '{{ stab }}' }
+      when: item.fstab.rc == 0                                                               

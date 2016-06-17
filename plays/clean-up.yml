@@ -1,5 +1,5 @@
 ---
-- name: Play that does post-provisioning configuration on the host
+- name: Play that cleans up directories after vagrant destroy
   
   hosts: 127.0.0.1
   connection: local
@@ -7,33 +7,41 @@
 
   vars:
 
-    workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
-    hostname:  "{{ lookup('env', 'VD_ENV_HOSTNAME')}}"
-    guest_ip:  "{{ lookup('env', 'VD_ENV_GUEST_IP') }}"
+    ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
+    key:  "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+    host: "{{ lookup('env', 'VD_ENV_HOSTNAME')        }}"
 
-    ssh_config:      "{{ lookup('env', 'VD_ENV_SSH_CONFIG') }}"
-    known_hosts:     "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
-    default_rsa_key: "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
+    workspace:   "{{ lookup('env', 'VD_ENV_WORKSPACE')       }}"
+    ssh_config:  "{{ lookup('env', 'VD_ENV_SSH_CONFIG')      }}"
+    known_hosts: "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
 
   tasks:
 
     - name: Remove .env file 
       file: path="{{ workspace }}/.env"
-            state=absent
+            state=absent 
+    
+    - name: "Check fstabs for {{ workspace }}/devstack"
+      shell: "mount | grep {{ workspace }}/devstack" 
+      register: dtab
 
-    - name: "Unnount '{{ workspace }}/devstack'"
-      shell: "fusermount -u {{ workspace }}/devstack"
+    - name: "Check fstabs for {{ workspace }}/stack"
+      shell: "mount | grep {{ workspace }}/stack" 
+      register: stab
 
-    - name: "Unmount '{{ workspace }}/stack'"
-      shell: "fusermount -u {{ workspace }}/stack" 
+    - name: "Unmount directories"
+      shell: "fusermount -u {{ workspace }}/{{ item.folder }}"
+      with_items:
+        - { folder: 'devstack', fstab: '{{ dtab }}' }
+        - { folder: 'stack',    fstab: '{{ stab }}' }
+      when: item.fstab.rc == 0
 
     - name: "Remove '{{ workspace }}/devstack'" 
-      file: path="{{ workspace }}/devstack"
+      file: path="{{ workspace }}/{{ item }}"
             state=absent
-
-    - name: "Remove '{{ workspace }}/stack'"
-      file: path="{{ workspace }}/stack"
-            state=absent
+      with_items:
+        - devstack
+        - stack
 
     - name: "Ensure '{{ known_hosts }}' is clean"
       lineinfile: dest="{{ known_hosts }}" 
@@ -44,8 +52,8 @@
       blockinfile:
         dest: "{{ ssh_config }}"
         block: |
-          Host {{ hostname }}                          
-            Hostname     {{ guest_ip }}            
+          Host {{ host }}                          
+            Hostname     {{ ip }}            
             User         stack
-            IdentityFile {{ default_rsa_key }}
+            IdentityFile {{ key }}
         state: absent

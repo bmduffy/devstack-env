@@ -26,14 +26,11 @@
           GUEST_IP={{ guest_ip }}
 
     - name: "Create '{{ workspace }}/devstack'" 
-      file: path="{{ workspace }}/devstack"
+      file: path="{{ workspace }}/{{ item }}"
             state=directory
-      become: yes
-      become_user: "{{ user }}"
-
-    - name: "Create '{{ workspace }}/stack'"
-      file: path="{{ workspace }}/stack"
-            state=directory
+      with_items:
+        - devstack
+        - stack
       become: yes
       become_user: "{{ user }}"
 
