@@ -5,8 +5,6 @@
   connection: local
   remote_user: root
 
-  sudo: true
-
   vars:
 
     ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
@@ -28,19 +26,31 @@
       with_items: "{{ ansible_mounts }}"
 
     - name: "Unmount devstack"
-      shell: "fusermount -z {{ item.mount }}"
+      shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/devstack"
 
     - name: "Unmount stack"
-      shell: "fusermount -z {{ item.mount }}"
+      shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/stack"
 
+    - name: "Remove directories" 
+      file: path="{{ workspace }}/{{ item }}"
+            state=absent
+      with_items:
+        - devstack
+        - stack
+
     - name: "Ensure '{{ known_hosts }}' is clean"
-      lineinfile: dest="{{ known_hosts }}" 
-                  regexp="^({{ ip }}|{{ host }})"
-                  state=absent
+      known_hosts: path="{{ known_hosts }}"
+                   name="{{ item }}"
+                   state=absent
+      with_items:
+        - "{{ ip   }}"
+        - "{{ host }}"
+      become: yes
+      become_user: root
 
     - name: "Remove '{{ host }}' config to '{{ ssh_config }}'"
       blockinfile:
@@ -50,4 +60,5 @@
             Hostname     {{ ip }}            
             User         stack
             IdentityFile {{ key }}
+            StrictHostKeyChecking no
         state: absent

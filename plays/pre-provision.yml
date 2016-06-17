@@ -5,8 +5,6 @@
   connection: local
   remote_user: root
 
-  sudo: true
-
   vars:
 
     ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
@@ -30,7 +28,7 @@
         block: |
           GUEST_IP={{ ip }}
 
-    - name: "Create '{{ workspace }}/devstack'" 
+    - name: "Create directories" 
       file: path="{{ workspace }}/{{ item }}"
             state=directory
       with_items:
@@ -40,12 +38,12 @@
       become_user: "{{ user }}"
 
     - name: "Unmount devstack"
-      shell: "fusermount -z {{ item.mount }}"
+      shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/devstack"
 
     - name: "Unmount stack"
-      shell: "fusermount -z {{ item.mount }}"
+      shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
       when: item.mount == "{{ workspace }}/stack" 
 

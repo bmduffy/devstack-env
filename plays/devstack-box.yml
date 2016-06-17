@@ -3,13 +3,14 @@
   
   hosts: guests
   remote_user: root
-  sudo: true
 
   vars:
-    # password must be hashed, see below
+
     user:      "{{ lookup('env', 'USER') }}"
     key:       "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
     workspace: "{{ lookup('env', 'VD_ENV_WORKSPACE') }}"
+
+    # password must be hashed, see below
     password:  "pass"
     nopass:    "stack ALL=(ALL) NOPASSWD:ALL"
 
@@ -21,10 +22,11 @@
     - name: Install relevant packages
       yum: name={{ item }} state=present
       with_items:
-        - sudo
         - vim
         - git
         - net-tools
+      become: yes
+      become_user: root
 
     - name: Ensure 'stack' user is created
       user: name=stack
@@ -52,6 +54,9 @@
            dest=/opt/devstack
       become: yes
       become_user: stack
+    
+    - name: Add ssh key
+      authorized_key: user=stack key="{{ key }}"
 
     - name: Copy minimal configuration for devstack
       copy: src="{{ workspace }}/local.conf" 
@@ -59,4 +64,3 @@
             owner=stack 
             group=stack 
             mode=0755
-

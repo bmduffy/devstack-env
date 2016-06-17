@@ -29,15 +29,19 @@
             Hostname     {{ ip }}            
             User         stack
             IdentityFile {{ key }}
+            StrictHostKeyChecking no
         state: present
 
     - name: "Ensure '{{ known_hosts }}' is clean"
-      lineinfile: dest="{{ known_hosts }}" 
-                  regexp="^({{ ip }}|{{ host }})"
-                  state=absent
+      known_hosts: path="{{ known_hosts }}"
+                   name="{{ item }}"
+                   state=absent
+      with_items:
+        - "{{ ip   }}"
+        - "{{ host }}"
 
     - name: "Mount directories in {{ workspace }}"
-      shell: "sshfs {{ host }}:{{ item.mount }} {{ workspace }}/{{ item.folder }}"
+      shell: "sshpass -p 'pass' sshfs {{ item.mount }} {{ item.folder }}"
       with_items:
-        - { mount: '{{ dmnt }}', folder: 'devstack' }
-        - { mount: '{{ smnt }}', folder: 'stack'    }                                                               
+        - { mount: '{{ host }}:{{ dmnt }}', folder: '{{ workspace }}/devstack' }
+        - { mount: '{{ host }}:{{ smnt }}', folder: '{{ workspace }}/stack'    }
