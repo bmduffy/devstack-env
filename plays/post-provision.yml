@@ -45,4 +45,4 @@
       shell: "sshfs {{ item.mount }} {{ item.folder }}"
       with_items:
         - { mount: '{{ host }}:{{ dmnt }}', folder: '{{ workspace }}/devstack' }
-        - { mount: '{{ host }}:{{ smnt }}', folder: '{{ workspace }}/stack'    }
+        - { mount: '{{ host }}:{{ smnt }}', folder: '{{ workspace }}/src'    }

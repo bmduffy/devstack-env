@@ -32,7 +32,7 @@
             state=directory
       with_items:
         - devstack
-        - stack
+        - src
       become: yes
       become_user: "{{ user }}"
 
@@ -43,10 +43,10 @@
       become: yes
       become_user: root
 
-    - name: "Unmount stack"
+    - name: "Unmount src"
       shell: "fusermount -z -u {{ item.mount }}"
       with_items: "{{ ansible_mounts }}"
-      when: item.mount == "{{ workspace }}/stack" 
+      when: item.mount == "{{ workspace }}/src" 
       become: yes
       become_user: root
 

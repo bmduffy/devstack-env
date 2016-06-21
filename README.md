@@ -1,13 +1,49 @@
-## Deploy DevStack into a VM with Vagrant
+# Deploy DevStack Environment with Vagrant
 
-The goal of this project is to deploy DevStack into a VM, in an automated and easily repeatable way, so that you can get 
-developing OpenStack as quickly as possible. I only cater for a Centos 7 host box, so the prerequisites are tailored 
-this environment.
+## Overview
 
-### Prerequisites
+If you want to contribute to the OpenStack open source project,
+deploying DevStack can take time. I've tried to automate this process
+for deploying Devstack into a VM. 
 
-**Install VirtualBox:** You can choose any VM software you like. I pefer VirtualBox, I have had more experience with it, and it seems to play 
-well with Centos 7. The following steps worked for me when installing VirtualBox. 
+I've only done this for a Centos 7 host box, so the everything is  
+tailored this environment.
+
+The project environment is managed with Vagrant. 
+Provisioning of the host and VM are managed with Ansible.
+These components are tied together with make. 
+
+## Prerequisites
+
+* Ruby
+* Make
+* Ansible
+* VirtualBox
+* Vagrant
+
+## Usage
+
+```
+    make           # default 'make all' builds the VM and sets up the host
+    make retry     # reloads and reprovisions the VM
+    make provision # reprovisions the VM
+    make stack     # pulls all OpenStack source in the local.conf and deploys it
+    make unstack   # tears down the stack
+    make reconfig  # if you make changes to local.conf, will unstack and stack the new config
+    make clean     # destroys the VM and cleans up the host
+```
+
+### Notes
+
+* DevStack source code is pulled from [here](https://git.openstack.org/openstack-dev/devstack) and stored in /opt/devstack when the VM is provisioned. This folder is mounted on the host in the devstack folder where the makefile is located.
+* OpenStack source code is pulled by 'make stack' and stored in /opt/stack on the VM. This folder is mounted on the host in the src folder where the makefile is located.
+
+## Installation Details
+
+**Install VirtualBox:** You can choose any VM software you like. 
+I pefer VirtualBox, I have had more experience with it, and it 
+seems to play well with Centos 7. The following steps worked for 
+me when installing VirtualBox. 
 
 For more information go
 [here](http://www.if-not-true-then-false.com/2010/install-virtualbox-with-yum-on-fedora-centos-red-hat-rhel/).
@@ -66,47 +102,4 @@ vagrant plugin install vagrant-env
 
 ```
   sudo yum install -y ansible
-```
-
-### How to Use
-
-Once you've installed all the prerequisites, you should just need to run;
-
-```
-    vagrant up
-```
-
-This will;
-    
-1. Deploy a VM into VirtualBox
-  * minimal install requirements for DevStack is 4GB memory + 2 CPUs
-  * hostonly adapter on **172.18.161.6**
-2. Provision the VM using Ansible
-  * create **stack** user with the correct groups and permissions
-  * clone DevStack to **/opt/devstack**
-  * copy **local.conf**, your DevStack configuration to **/opt/devstack**
-3. Set up ssh on your host machine
-  * add **devstack-box** entry to **~/.ssh/config**
-  * copy a default rsa key to the VM
-  * mount **devstack-box:/opt/devstack** to **./devstack** on your host
-
-You can ssh to the VM via the NAT adapter;
-
-```
-    vagrant ssh 
-```
-
-Or the hostonly adapter;
-
-```
-    ssh devstack-box
-```
-
-Check that **./devstack** is mounted. You should see the contents of the devstack folder
-here. You can edit files on the VM directly here when you are working on OpenStack code.
-
-To destroy the DevStack environment, you should just need to run;
-
-```
-    vagrant destroy
 ```
