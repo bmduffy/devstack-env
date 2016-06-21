@@ -28,14 +28,19 @@ all:
 
 retry:
 	ansible-playbook -v ./plays/pre-provision.yml 
-	#vagrant reload
+	vagrant reload
 	vagrant provision
-	ansible-playbook -vvv ./plays/post-provision.yml
+	ansible-playbook -v ./plays/post-provision.yml
 
-stack-up:
+provision:
+	ansible-playbook -v ./plays/pre-provision.yml 
+	vagrant provision
+	ansible-playbook -v ./plays/post-provision.yml
+
+stack:
 	ssh -t ${VD_ENV_HOSTNAME} bash /opt/devstack/stack.sh
 
-stack-down:
+unstack:
 	ssh -t ${VD_ENV_HOSTNAME} /opt/devstack/unstack.sh
 
 reconfig:
