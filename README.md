@@ -27,7 +27,6 @@ These components are tied together with make.
     make           # default 'make all' builds the VM and sets up the host
     make retry     # reloads and reprovisions the VM
     make provision # reprovisions the VM
-    make reconfig  # if you make changes to local.conf, will unstack and stack the new config
     make clean     # destroys the VM and cleans up the host
 ```
 

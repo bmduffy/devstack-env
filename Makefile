@@ -37,17 +37,6 @@ provision:
 	vagrant provision
 	ansible-playbook -v ./plays/post-provision.yml
 
-stack:
-	ssh -t ${VD_ENV_HOSTNAME} bash /opt/devstack/stack.sh
-
-unstack:
-	ssh -t ${VD_ENV_HOSTNAME} /opt/devstack/unstack.sh
-
-reconfig:
-	scp local.config ${VD_ENV_DEVSTACK_MOUNT}
-	unstack
-	stack
-
 clean:
 	vagrant destroy
 	ansible-playbook -v ./plays/clean-up.yml
