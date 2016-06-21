@@ -27,10 +27,19 @@ These components are tied together with make.
     make           # default 'make all' builds the VM and sets up the host
     make retry     # reloads and reprovisions the VM
     make provision # reprovisions the VM
-    make stack     # pulls all OpenStack source in the local.conf and deploys it
-    make unstack   # tears down the stack
     make reconfig  # if you make changes to local.conf, will unstack and stack the new config
     make clean     # destroys the VM and cleans up the host
+```
+
+When the VM is up you can ssh to it and run DevStack scripts;
+
+```
+  ssh devstack-box   # this is automatically put in your host config
+  cd /opt/devstack
+  git status 
+  git checkout stable/kilo  # or another stable branch of devstack
+  ./stack.sh
+  ./unstack.sh
 ```
 
 ### Notes
@@ -94,8 +103,6 @@ whereis vagrant
 
 # 3. Instal Vagrant plugins to make this project work
 vagrant plugin install vagrant-vbguest
-vagrant plugin install vagrant-triggers
-vagrant plugin install vagrant-env
 ```
 
 **Install Ansible:** This Vagrantfile is using Ansible for provisioning of the VM and the host machine.
