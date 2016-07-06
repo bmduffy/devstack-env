@@ -1,9 +1,0 @@
-version: '2'
-services:
-    container:
-        build: .
-        ports:
-            - "127.0.0.1:8080:8080"
-        volumes:
-            - "./devstack:/opt/devstack"
-            - "./src:/opt/stack"

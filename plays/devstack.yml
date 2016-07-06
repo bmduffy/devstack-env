@@ -10,18 +10,6 @@
 
   tasks: 
 
-    - name: Upgrade all packages
-      yum: name=* state=latest
-
-    - name: Install relevant packages
-      yum: name={{ item }} state=present
-      with_items:
-        - vim
-        - git
-        - net-tools
-      become: yes
-      become_user: root
-
     - name: Ensure 'stack' user is created
       user: name=stack
             shell=/bin/bash
@@ -46,20 +34,5 @@
       with_items:
         - devstack
         - stack
-      become: yes
-      become_user: root
-
-    - name: Clone devstack
-      git: repo=https://git.openstack.org/openstack-dev/devstack
-           dest=/opt/devstack
-      become: yes
-      become_user: stack
-    
-    - name: Copy minimal configuration for devstack
-      copy: src="/opt/setup/local.conf" 
-            dest=/opt/devstack/local.conf 
-            owner=stack 
-            group=stack 
-            mode=0755
       become: yes
       become_user: root

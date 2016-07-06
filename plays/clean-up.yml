@@ -5,32 +5,9 @@
   connection: local
 
   vars:
-
-    ip:   "{{ lookup('env', 'VD_ENV_GUEST_IP')        }}"
-    key:  "{{ lookup('env', 'VD_ENV_DEFAULT_RSA_KEY') }}"
-    host: "{{ lookup('env', 'VD_ENV_HOSTNAME')        }}"
-
-    workspace:   "{{ lookup('env', 'VD_ENV_WORKSPACE')       }}"
-    ssh_config:  "{{ lookup('env', 'VD_ENV_SSH_CONFIG')      }}"
-    known_hosts: "{{ lookup('env', 'VD_ENV_SSH_KNOWN_HOSTS') }}"
+    workspace: "{{ lookup('env', 'WORKSPACE') }}"
 
   tasks:
-
-    - name: Remove .env file 
-      file: path="{{ workspace }}/.env"
-            state=absent 
-
-    - name: "Unmount devstack"
-      shell: "fusermount -z -u {{ item.mount }}"
-      with_items: "{{ ansible_mounts }}"
-      when: item.mount == "{{ workspace }}/devstack"
-
-    - name: "Unmount src"
-      shell: "fusermount -z -u {{ item.mount }}"
-      with_items: "{{ ansible_mounts }}"
-      when: item.mount == "{{ workspace }}/src"
-      become: yes
-      become_user: root
 
     - name: "Remove directories" 
       file: path="{{ workspace }}/{{ item }}"
@@ -38,28 +15,5 @@
       with_items:
         - devstack
         - src
-      become: yes
-      become_user: root
-
-    - name: "Ensure '{{ known_hosts }}' is clean"
-      known_hosts: path="{{ known_hosts }}"
-                   name="{{ item }}"
-                   state=absent
-      with_items:
-        - "{{ ip   }}"
-        - "{{ host }}"
-      become: yes
-      become_user: root
-
-    - name: "Remove '{{ host }}' config to '{{ ssh_config }}'"
-      blockinfile:
-        dest: "{{ ssh_config }}"
-        block: |
-          Host {{ host }}                          
-            Hostname              {{ ip }}            
-            User                    stack
-            IdentityFile          {{ key }}
-            StrictHostKeyChecking    no
-        state: absent
       become: yes
       become_user: root

@@ -7,36 +7,41 @@
 #	…
 
 # We need these environment variables
+export WORKSPACE = $(shell pwd)
 
-export VD_ENV_WORKSPACE = $(shell pwd)
-export VD_ENV_GUEST_IP  = 172.18.161.6
-export VD_ENV_HOSTNAME  = devstack-box
-
-export VD_ENV_DEVSTACK_MOUNT = /opt/devstack 
-export VD_ENV_STACK_MOUNT    = /opt/stack
-
-export VD_ENV_SSH_CONFIG      = ${HOME}/.ssh/config
-export VD_ENV_SSH_KNOWN_HOSTS = ${HOME}/.ssh/known_hosts
-export VD_ENV_DEFAULT_RSA_KEY = ${HOME}/.ssh/id_rsa.pub
+IMAGE     = devstack-image
+CONTAINER = devstack-container 
 
 # Goals we want our makefile to manage
 
-all:
-	ansible-playbook -v ./plays/pre-provision.yml
-	vagrant up
-	ansible-playbook -v ./plays/post-provision.yml
+all: clone build run
 
-retry:
-	ansible-playbook -v ./plays/pre-provision.yml 
-	vagrant reload
-	vagrant provision
-	ansible-playbook -v ./plays/post-provision.yml
+clone:
+	ansible-playbook -v ./plays/host-setup.yml
 
-provision:
-	ansible-playbook -v ./plays/pre-provision.yml 
-	vagrant provision
-	ansible-playbook -v ./plays/post-provision.yml
+run:
+	docker run -d -p "127.0.0.1:8080:8080" --name ${CONTAINER} ${IMAGE}
 
-clean:
-	vagrant destroy
+shell:
+	docker exec -it ${CONTAINER} /bin/bash
+
+build:
+	docker build --no-cache -t ${IMAGE} .
+
+reload:
+	docker build -t ${IMAGE} .
+
+stack:
+	cp local.conf ./devstack
+	docker exec -it ${CONTAINER} /usr/bin/su - stack && /usr/bin/cd /opt/devstack && ./stack.sh
+
+unstack:
+	docker exec -it ${CONTAINER} /usr/bin/su - stack && /usr/bin/cd /opt/devstack && ./unstack.sh
+
+clean: 
+	docker stop   ${CONTAINER}
+
 	ansible-playbook -v ./plays/clean-up.yml
+
+	docker rm  -f ${CONTAINER} $(docker rm $(docker ps -q --filter status=exited)
+	docker rmi -f ${IMAGE} $(docker images -q --filter "dangling=true")
