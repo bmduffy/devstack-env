@@ -33,10 +33,10 @@ reload:
 
 stack:
 	cp local.conf ./devstack
-	docker exec -it ${CONTAINER} /usr/bin/su - stack && /usr/bin/cd /opt/devstack && ./stack.sh
+	docker exec -it ${CONTAINER} /usr/bin/su stack -c "cd /opt/devstack; ./stack.sh"
 
 unstack:
-	docker exec -it ${CONTAINER} /usr/bin/su - stack && /usr/bin/cd /opt/devstack && ./unstack.sh
+	docker exec -it ${CONTAINER} /usr/bin/su stack -c "cd /opt/devstack; ./unstack.sh"
 
 clean: 
 	docker stop   ${CONTAINER}

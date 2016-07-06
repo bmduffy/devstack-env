@@ -6,7 +6,5 @@
 
 # ignore these folders
 
-.vagrant
 devstack
-stack
 src
