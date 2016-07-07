@@ -37,7 +37,7 @@ clean-repos:
 	ansible-playbook -v ./plays/clean-host.yml
 
 clean-docker: 
-	docker stop   ${CONTAINER}
-	docker rm  -f ${CONTAINER} $(docker rm $(docker ps -q --filter status=exited)
+	docker stop ${CONTAINER}
+	docker rm -f ${CONTAINER} $(docker rm $(docker ps -q --filter status=exited)
 	docker rmi -f ${DEVSTKIMG} 
 	docker rmi -f $(docker images -q --filter "dangling=true")

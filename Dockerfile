@@ -7,7 +7,8 @@ MAINTAINER Brian Duffy brian.duffy@ammeon.com
 RUN yum install -y wget
 RUN wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-7.noarch.rpm
 RUN rpm -i epel-release-7-7.noarch.rpm && yum update  -y
-RUN yum install -y vim git net-tools sudo gcc openssl-devel python-devel python-pip
+RUN yum install -y net-tools iproute.x86_64 iproute-devel.x86_64
+RUN yum install -y vim sudo git gcc openssl-devel python-devel python-pip
 RUN pip install --upgrade pip setuptools
 RUN pip install ansible
 
