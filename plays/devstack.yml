@@ -29,10 +29,20 @@
     - name: Ensure work directories are present
       file: path="/opt/{{ item }}"
             owner=stack
+            group=stack
             state=directory 
             mode="u=rwx,g=rx,o=rx"
       with_items:
         - devstack
         - stack
+      become: yes
+      become_user: root
+
+    - name: Ensure log directory is present
+      file: path="/opt/stack/logs"
+            owner=stack
+            group=stack
+            state=directory
+            mode="u=rwx,g=rx,o=rx"
       become: yes
       become_user: root

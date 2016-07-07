@@ -11,9 +11,9 @@
 
   tasks: 
 
-    - name: "Create directories" 
+    - name: Ensure work directories are present
       file: path="{{ workspace }}/{{ item }}"
-            state=directory
+            state=directory 
       with_items:
         - devstack
         - src
