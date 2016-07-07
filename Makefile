@@ -1,47 +1,43 @@
-# 
-# Recipies must be tabbed!!!
-#
-# target: prerequisites
-#	recipe
-#	…
-#	…
 
-# We need these environment variables
 export WORKSPACE = $(shell pwd)
+export DEVSTKIMG = devstack-image
+export CONTAINER = devstack-container
 
-IMAGE     = devstack-image
-CONTAINER = devstack-container 
-
-# Goals we want our makefile to manage
+VOL1 = "${WORKSPACE}/src:/opt/stack"
+VOL2 = "${WORKSPACE}/devstack:/opt/devstack"
+PORT = "127.0.0.1:8080:8080"
 
 all: clone build run
 
 clone:
-	ansible-playbook -v ./plays/host-setup.yml
+	ansible-playbook -v ./plays/setup-host.yml
 
 run:
-	docker run -d -p "127.0.0.1:8080:8080" --name ${CONTAINER} ${IMAGE}
+	docker run -d -p ${PORT} -v ${VOL1} -v ${VOL2} --name ${CONTAINER} ${DEVSTKIMG}
 
 shell:
 	docker exec -it ${CONTAINER} /bin/bash
 
 build:
-	docker build --no-cache -t ${IMAGE} .
+	docker build --no-cache -t ${DEVSTKIMG} .
 
 reload:
-	docker build -t ${IMAGE} .
+	docker build -t ${DEVSTKIMG} .
 
 stack:
 	cp local.conf ./devstack
-	docker exec -it ${CONTAINER} /usr/bin/su stack -c "cd /opt/devstack; ./stack.sh"
+	docker exec -i ${CONTAINER} /usr/bin/su stack -c "cd /opt/devstack; ./stack.sh"
 
 unstack:
-	docker exec -it ${CONTAINER} /usr/bin/su stack -c "cd /opt/devstack; ./unstack.sh"
+	docker exec -i ${CONTAINER} /usr/bin/su stack -c "cd /opt/devstack; ./unstack.sh"
 
-clean: 
+clean-all: clean-docker clean-repos
+
+clean-repos:
+	ansible-playbook -v ./plays/clean-host.yml
+
+clean-docker: 
 	docker stop   ${CONTAINER}
-
-	ansible-playbook -v ./plays/clean-up.yml
-
 	docker rm  -f ${CONTAINER} $(docker rm $(docker ps -q --filter status=exited)
-	docker rmi -f ${IMAGE} $(docker images -q --filter "dangling=true")
+	docker rmi -f ${DEVSTKIMG} 
+	docker rmi -f $(docker images -q --filter "dangling=true")

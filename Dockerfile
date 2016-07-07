@@ -1,6 +1,6 @@
 FROM centos:7
 
-MAINTAINER Brian Duffy bmduffy@gmail.com
+MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
 # install ansible and provision the centos container
 
@@ -21,9 +21,6 @@ RUN mkdir -p /opt/setup
 COPY plays/devstack.yml /opt/setup
 
 RUN ansible-playbook -v /opt/setup/devstack.yml
-
-ADD ./src      /opt/stack 
-ADD ./devstack /opt/devstack
 
 EXPOSE 80 443 8000 8080
 
