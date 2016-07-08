@@ -5,6 +5,7 @@
   connection: local
 
   vars:
+    stack_id:  "{{ lookup('env', 'STACK_ID') }}"
     password:  "pass"
     nopass:    "stack ALL=(ALL) NOPASSWD:ALL"
 
@@ -12,6 +13,7 @@
 
     - name: Ensure 'stack' user is created
       user: name=stack
+            uid="{{ stack_id }}"
             shell=/bin/bash
             append=yes 
             state=present 
@@ -23,26 +25,5 @@
       lineinfile: dest=/etc/sudoers
                   line="{{ nopass }}"
                   state=present
-      become: yes
-      become_user: root
-
-    - name: Ensure work directories are present
-      file: path="/opt/{{ item }}"
-            owner=stack
-            group=stack
-            state=directory 
-            mode="u=rwx,g=rx,o=rx"
-      with_items:
-        - devstack
-        - stack
-      become: yes
-      become_user: root
-
-    - name: Ensure log directory is present
-      file: path="/opt/stack/logs"
-            owner=stack
-            group=stack
-            state=directory
-            mode="u=rwx,g=rx,o=rx"
       become: yes
       become_user: root

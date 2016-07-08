@@ -1,5 +1,5 @@
 ---
-- name: Ensure folders exist on the host
+- name: Create folders and make sure devstack repo is pulled
 
   hosts: 127.0.0.1
   connection: local
@@ -12,14 +12,19 @@
   tasks: 
 
     - name: Ensure work directories are present
-      file: path="{{ workspace }}/{{ item }}"
-            state=directory 
-      with_items:
-        - devstack
-        - src
+      file: path="{{ workspace }}/src"
+            state=directory
+            mode="u=rwx,g=rwx,o=rx" 
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Ensure work directories are present
+      file: path="{{ workspace }}/src/devstack"
+            state=directory
+            mode="u=rwx,g=rwx,o=rx"
       become: yes
       become_user: "{{ user }}"
 
     - name: Clone devstack
       git: repo=https://git.openstack.org/openstack-dev/devstack
-           dest="{{ workspace }}/devstack"
+           dest="{{ workspace }}/src/devstack"

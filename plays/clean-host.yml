@@ -5,15 +5,14 @@
   connection: local
 
   vars:
+
+    user:      "{{ lookup('env', 'USER') }}"
     workspace: "{{ lookup('env', 'WORKSPACE') }}"
 
   tasks:
 
     - name: "Remove directories" 
-      file: path="{{ workspace }}/{{ item }}"
+      file: path="{{ workspace }}/src"
             state=absent
-      with_items:
-        - devstack
-        - src
       become: yes
-      become_user: root
+      become_user: "{{ user }}"

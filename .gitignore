@@ -1,10 +1,8 @@
 
 # ignore these files
 
-.env
 **/*.retry
 
 # ignore these folders
 
-devstack
 src

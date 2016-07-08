@@ -1,58 +1,53 @@
 
+# Get system info
+
+export USER_ID   = $(id -u $USER)
 export WORKSPACE = $(shell pwd)
-export BASEIMAGE = c7systemd
-export DEVSTKIMG = devstack-image
-export CONTAINER = devstack-container
 
-VOL0 = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-VOL1 = "${WORKSPACE}/src:/opt/stack"
-VOL2 = "${WORKSPACE}/devstack:/opt/devstack"
 
-PORT = "127.0.0.1:8080:8080"
+export DEVSTACK_BASE_IMG  = c7systemd
+export DEVSTACK_IMG       = c7devstack
+export DEVSTACK_CONTAINER = devstack-container
+export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
+export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
+
+export CGROUP_VOL   = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+export DEVSTACK_VOL = "${WORKSPACE}/src:/opt"
+export DEVSTACK_PORT = "127.0.0.1:8080:8080"
 
 STACK   = "export TERM=xterm; cd /opt/devstack; ./stack.sh"
 UNSTACK = "export TERM=xterm; cd /opt/devstack; ./unstack.sh"
 
-all: clone build run
+
+all: clone build deploy
 
 clone:
-	sudo ansible-playbook -v ./plays/setup-host.yml
-
-run:
-	docker run -d --user stack -p ${PORT} -v ${VOL0} -v ${VOL1} -v ${VOL2} --name ${CONTAINER} ${DEVSTKIMG}
-
-shell:
-	docker exec -it ${CONTAINER} /bin/bash
+	ansible-playbook -v ./plays/setup-host.yml
 
 build:
-	
-	cd ${WORKSPACE}/${BASEIMAGE}
-	docker build --no-cache --rm -t ${BASEIMAGE} .
+	ansible-playbook -v ./plays/build.yml
 
-	cd ${WORKSPACE}
-	docker build --no-cache --rm -t ${DEVSTKIMG} .
+deploy:
+	ansible-playbook -v ./plays/deploy.yml
 
 reload:
-	docker stop ${CONTAINER}
-	docker rm  -f ${CONTAINER}
-	docker build -t ${DEVSTKIMG} .
-	docker run -d --user stack -p ${PORT} -v ${VOL0} -v ${VOL1} -v ${VOL2} --name ${CONTAINER} ${DEVSTKIMG}
+	ansible-playbook -v ./plays/reload.yml
+	ansible-playbook -v ./plays/deploy.yml
 
 stack:
 	cp local.conf ./devstack
-	docker exec -i ${CONTAINER} /usr/bin/su stack -c ${STACK}
+	docker exec -i ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${STACK}
 
 unstack:
-	docker exec -i ${CONTAINER} /usr/bin/su stack -c ${UNSTACK}
+	docker exec -i ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${UNSTACK}
 
-clean-all: clean-docker clean-repos
+shell:
+	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash
 
 clean-repos:
 	ansible-playbook -v ./plays/clean-host.yml
 
 clean-docker: 
-	docker stop ${CONTAINER}
-	docker rm -f ${CONTAINER} $(docker rm $(docker ps -q --filter status=exited)
-	docker rmi -f ${DEVSTKIMG} 
-	docker rmi -f ${BASEIMAGE}
-	docker rmi -f $(docker images -q --filter "dangling=true")
+	ansible-playbook -v ./plays/clean-docker.yml
+
+clean: clean-docker clean-repos

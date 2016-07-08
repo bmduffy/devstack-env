@@ -6,13 +6,12 @@ MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
 RUN mkdir -p /opt/setup
 
-COPY plays/devstack.yml /opt/setup
+COPY ../plays/devstack.yml /opt/setup
 
 RUN ansible-playbook -v /opt/setup/devstack.yml
 
 EXPOSE 80 443 8000 8080
 
-VOLUME [ "/opt/devstack" ]
-VOLUME [ "/opt/stack" ]
+VOLUME [ "/opt" ]
 
 CMD ["/usr/sbin/init"]
