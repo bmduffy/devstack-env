@@ -1,4 +1,4 @@
-FROM local/c7-systemd
+FROM c7systemd
 
 MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
@@ -6,7 +6,7 @@ MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
 RUN mkdir -p /opt/setup
 
-COPY ../plays/devstack.yml /opt/setup
+COPY ${WORKSPACE}/plays/devstack.yml /opt/setup
 
 RUN ansible-playbook -v /opt/setup/devstack.yml
 

@@ -35,7 +35,9 @@
       become_user: "{{ user }}"
 
     - name: Rebuild Devstack image
-      shell: "docker build --rm -t {{ stack_img }} ."
+      shell: "docker build --rm 
+                           -e WORKSPACE={{ workspace }} 
+                           -t {{ dstk_img }} ."
       args:
         chdir: "{{ workspace }}/{{ dstk_img }}"
       become: yes
