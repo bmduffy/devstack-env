@@ -4,13 +4,13 @@ MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
 # copy necessary files to the image
 
-RUN mkdir -p /opt/setup
+RUN mkdir -p /tmp/setup
 
-COPY ./plays/devstack.yml /opt/setup
-COPY ./scripts/env.sh     /opt/setup
+COPY ./plays/devstack.yml /tmp/setup
+COPY ./scripts/env.sh     /tmp/setup
 
-RUN bash                /opt/setup/env.sh
-RUN ansible-playbook -v /opt/setup/devstack.yml
+RUN bash                /tmp/setup/env.sh
+RUN ansible-playbook -v /tmp/setup/devstack.yml
 
 EXPOSE 80 443 8000 8080
 

@@ -24,7 +24,6 @@
                          -p {{ dstk_port }}
                          -v {{ cgrp_vol }}
                          -v {{ dstk_vol }}
-                         --name {{ dstk_container }} dstk_img
-             "
+                         --name {{ dstk_container }} {{ dstk_img }}"
       become: yes
       become_user: "{{ user }}"

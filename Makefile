@@ -34,10 +34,10 @@ reload:
 
 stack:
 	cp local.conf ./devstack
-	docker exec -i ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${STACK}
+	docker exec -it ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${STACK}
 
 unstack:
-	docker exec -i ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${UNSTACK}
+	docker exec -it ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${UNSTACK}
 
 shell:
 	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash
