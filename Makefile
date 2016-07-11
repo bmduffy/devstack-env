@@ -1,9 +1,9 @@
 
 # Get system info
 
-export USER_ID   = $(id -u $USER)
-export WORKSPACE = $(shell pwd)
-
+export USER_ID    = $(id -u ${USER})
+export WORKSPACE  = $(shell pwd)
+export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 export DEVSTACK_BASE_IMG  = c7systemd
 export DEVSTACK_IMG       = c7devstack
@@ -11,15 +11,11 @@ export DEVSTACK_CONTAINER = devstack-container
 export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
 export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
 
-export CGROUP_VOL   = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-export DEVSTACK_VOL = "${WORKSPACE}/src:/opt"
-export DEVSTACK_PORT = "127.0.0.1:8080:8080"
-
 STACK   = "export TERM=xterm; cd /opt/devstack; ./stack.sh"
 UNSTACK = "export TERM=xterm; cd /opt/devstack; ./unstack.sh"
 
 
-all: clone build deploy
+all: env clone build deploy
 
 clone:
 	ansible-playbook -v ./plays/setup-host.yml
@@ -29,6 +25,9 @@ build:
 
 deploy:
 	ansible-playbook -v ./plays/deploy.yml
+
+env:
+	ansible-playbook -v ./plays/env.yml
 
 reload:
 	ansible-playbook -v ./plays/reload.yml

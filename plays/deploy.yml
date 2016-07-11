@@ -21,7 +21,6 @@
     - name: Run the devstack container as the stack user in the container
       shell: "docker run -d 
                          -u stack
-                         -e STACK_ID={{ user_id }}
                          -p {{ dstk_port }}
                          -v {{ cgrp_vol }}
                          -v {{ dstk_vol }}
