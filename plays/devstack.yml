@@ -5,7 +5,6 @@
   connection: local
 
   vars:
-    stack_id:  1001
     password:  "pass"
     nopass:    "stack ALL=(ALL) NOPASSWD:ALL"
 
@@ -13,7 +12,7 @@
 
     - name: Ensure 'stack' user is created
       user: name=stack
-            uid="{{ stack_id }}"
+            uid=1001
             shell=/bin/bash
             append=yes 
             state=present 
@@ -31,6 +30,13 @@
     - name: Ensure 'stack' user can execute passwordless commands
       lineinfile: dest=/etc/sudoers
                   line="{{ nopass }}"
+                  state=present
+      become: yes
+      become_user: root
+
+    - name: Source environment variables in stack .bashrc
+      lineinfile: dest=/home/stack/.bashrc
+                  line="source /tmp/setup/env.sh"
                   state=present
       become: yes
       become_user: root

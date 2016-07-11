@@ -33,7 +33,7 @@ reload:
 	ansible-playbook -v ./plays/deploy.yml
 
 stack:
-	cp local.conf ./devstack
+	cp local.conf ./src/devstack
 	docker exec -it ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${STACK}
 
 unstack:

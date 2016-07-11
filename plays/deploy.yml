@@ -7,7 +7,6 @@
   vars:
 
     user:      "{{ lookup('env', 'USER') }}"
-    user_id:   "{{ lookup('env', 'USER_ID') }}"
     workspace: "{{ lookup('env', 'WORKSPACE') }}"
     cgrp_vol:  "{{ lookup('env', 'CGROUP_VOL') }}"
     dstk_vol:  "{{ lookup('env', 'DEVSTACK_VOL') }}"
