@@ -1,7 +1,6 @@
 
 # Get system info
 
-export USER_ID    = $(id -u ${USER})
 export WORKSPACE  = $(shell pwd)
 export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
