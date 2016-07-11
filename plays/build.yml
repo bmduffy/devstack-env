@@ -11,7 +11,7 @@
     base_img:  "{{ lookup('env', 'DEVSTACK_BASE_IMG')}}"
     dstk_img:  "{{ lookup('env', 'DEVSTACK_IMG')}}"
 
-  tasks: 
+  tasks:
 
     - name: Build base Centos 7 image with systemd
       shell: "docker build -f {{ workspace }}/{{ base_img }}/Dockerfile

@@ -5,7 +5,6 @@
   connection: local
 
   vars:
-    stack_id:  "{{ lookup('env', 'STACK_ID') }}"
     password:  "pass"
     nopass:    "stack ALL=(ALL) NOPASSWD:ALL"
 
@@ -13,7 +12,7 @@
 
     - name: Ensure 'stack' user is created
       user: name=stack
-            uid="{{ stack_id }}"
+            uid=1001
             shell=/bin/bash
             append=yes 
             state=present 
@@ -27,3 +26,11 @@
                   state=present
       become: yes
       become_user: root
+
+    - name: Ensure 'stack' user can execute passwordless commands
+      lineinfile: dest=/etc/sudoers
+                  line="{{ nopass }}"
+                  state=present
+      become: yes
+      become_user: root
+
