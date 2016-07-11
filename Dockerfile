@@ -2,6 +2,8 @@ FROM c7systemd
 
 MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
+ENV TERM xterm
+
 WORKDIR /opt/
 
 # copy necessary files to the image

@@ -18,7 +18,9 @@
   tasks:
     
     - name: Run the devstack container as the stack user in the container
-      shell: "docker run -d 
+      shell: "docker run -d
+                         --privileged
+                         --net=host 
                          -u stack
                          -p {{ dstk_port }}
                          -v {{ cgrp_vol }}

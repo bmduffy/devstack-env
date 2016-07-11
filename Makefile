@@ -30,10 +30,10 @@ reload:
 
 stack:
 	cp local.conf ./src/devstack
-	docker exec --privileged -i ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
+	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
 
 unstack:
-	docker exec --privileged -i ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
+	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
 
 shell:
 	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash

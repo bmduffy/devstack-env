@@ -34,9 +34,3 @@
       become: yes
       become_user: root
 
-    - name: Source environment variables in stack .bashrc
-      lineinfile: dest=/home/stack/.bashrc
-                  line="source /tmp/setup/env.sh"
-                  state=present
-      become: yes
-      become_user: root

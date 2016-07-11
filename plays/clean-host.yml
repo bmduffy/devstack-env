@@ -19,11 +19,12 @@
 
     - name: "Remove all .retry files from plays"
       shell:  "rm ./plays/*.retry"
+      ignore_errors: yes
       become: yes
       become_user: "{{ user }}"
 
     - name: "Remove old environment stuff"
-      shell: "rm ./scripts/env.sh"
+      shell: "rm ./scripts/*.sh"
       ignore_errors: yes
       become: yes
       become_user: "{{ user }}" 
