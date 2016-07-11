@@ -8,8 +8,8 @@ WORKDIR /opt/
 
 RUN mkdir -p /tmp/setup
 
-COPY ./plays/devstack.yml /tmp/setup
-COPY ./scripts/env.sh     /tmp/setup
+COPY ./plays/devstack.yml /tmp/setup/
+COPY ./scripts/stack_env.sh     /etc/profile.d/
 
 RUN ansible-playbook -v /tmp/setup/devstack.yml
 
