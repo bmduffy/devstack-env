@@ -1,42 +1,53 @@
-# 
-# Recipies must be tabbed!!!
-#
-# target: prerequisites
-#	recipe
-#	…
-#	…
 
-# We need these environment variables
+# Get system info
 
-export VD_ENV_WORKSPACE = $(shell pwd)
-export VD_ENV_GUEST_IP  = 172.18.161.6
-export VD_ENV_HOSTNAME  = devstack-box
+export USER_ID   = $(id -u $USER)
+export WORKSPACE = $(shell pwd)
 
-export VD_ENV_DEVSTACK_MOUNT = /opt/devstack 
-export VD_ENV_STACK_MOUNT    = /opt/stack
 
-export VD_ENV_SSH_CONFIG      = ${HOME}/.ssh/config
-export VD_ENV_SSH_KNOWN_HOSTS = ${HOME}/.ssh/known_hosts
-export VD_ENV_DEFAULT_RSA_KEY = ${HOME}/.ssh/id_rsa.pub
+export DEVSTACK_BASE_IMG  = c7systemd
+export DEVSTACK_IMG       = c7devstack
+export DEVSTACK_CONTAINER = devstack-container
+export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
+export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
 
-# Goals we want our makefile to manage
+export CGROUP_VOL   = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+export DEVSTACK_VOL = "${WORKSPACE}/src:/opt"
+export DEVSTACK_PORT = "127.0.0.1:8080:8080"
 
-all:
-	ansible-playbook -v ./plays/pre-provision.yml
-	vagrant up
-	ansible-playbook -v ./plays/post-provision.yml
+STACK   = "export TERM=xterm; cd /opt/devstack; ./stack.sh"
+UNSTACK = "export TERM=xterm; cd /opt/devstack; ./unstack.sh"
 
-retry:
-	ansible-playbook -v ./plays/pre-provision.yml 
-	vagrant reload
-	vagrant provision
-	ansible-playbook -v ./plays/post-provision.yml
 
-provision:
-	ansible-playbook -v ./plays/pre-provision.yml 
-	vagrant provision
-	ansible-playbook -v ./plays/post-provision.yml
+all: clone build deploy
 
-clean:
-	vagrant destroy
-	ansible-playbook -v ./plays/clean-up.yml
+clone:
+	ansible-playbook -v ./plays/setup-host.yml
+
+build:
+	ansible-playbook -v ./plays/build.yml
+
+deploy:
+	ansible-playbook -v ./plays/deploy.yml
+
+reload:
+	ansible-playbook -v ./plays/reload.yml
+	ansible-playbook -v ./plays/deploy.yml
+
+stack:
+	cp local.conf ./devstack
+	docker exec -i ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${STACK}
+
+unstack:
+	docker exec -i ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${UNSTACK}
+
+shell:
+	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash
+
+clean-repos:
+	ansible-playbook -v ./plays/clean-host.yml
+
+clean-docker: 
+	ansible-playbook -v ./plays/clean-docker.yml
+
+clean: clean-docker clean-repos

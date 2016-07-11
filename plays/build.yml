@@ -1,0 +1,30 @@
+---
+- name: Build all images from scratch, no-cache 
+
+  hosts: 127.0.0.1
+  connection: local
+
+  vars:
+
+    user:      "{{ lookup('env', 'USER') }}"
+    workspace: "{{ lookup('env', 'WORKSPACE') }}"
+    base_img:  "{{ lookup('env', 'DEVSTACK_BASE_IMG')}}"
+    dstk_img:  "{{ lookup('env', 'DEVSTACK_IMG')}}"
+
+  tasks: 
+
+    - name: Build base Centos 7 image with systemd
+      shell: "docker build -f {{ workspace }}/{{ base_img }}/Dockerfile
+                           --no-cache 
+                           --rm 
+                           -t {{ base_img }} {{ base_img }}"
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Build Devstack image
+      shell: "docker build -f {{ workspace }}/Dockerfile
+                           --no-cache 
+                           --rm
+                           -t {{ dstk_img }} ."
+      become: yes
+      become_user: "{{ user }}"

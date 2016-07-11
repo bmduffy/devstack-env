@@ -1,0 +1,18 @@
+---
+- name: Cleans up ssh config and directories
+  
+  hosts: 127.0.0.1
+  connection: local
+
+  vars:
+
+    user:      "{{ lookup('env', 'USER') }}"
+    workspace: "{{ lookup('env', 'WORKSPACE') }}"
+
+  tasks:
+
+    - name: "Remove directories" 
+      file: path="{{ workspace }}/src"
+            state=absent
+      become: yes
+      become_user: "{{ user }}"

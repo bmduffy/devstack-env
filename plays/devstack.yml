@@ -1,0 +1,29 @@
+---
+- name: Play that provisions the guest VM environment for devstack
+  
+  hosts: 127.0.0.1
+  connection: local
+
+  vars:
+    stack_id:  "{{ lookup('env', 'STACK_ID') }}"
+    password:  "pass"
+    nopass:    "stack ALL=(ALL) NOPASSWD:ALL"
+
+  tasks: 
+
+    - name: Ensure 'stack' user is created
+      user: name=stack
+            uid="{{ stack_id }}"
+            shell=/bin/bash
+            append=yes 
+            state=present 
+            password={{ password |password_hash('sha512') }} 
+      become: yes
+      become_user: root
+
+    - name: Ensure 'stack' user can execute passwordless commands
+      lineinfile: dest=/etc/sudoers
+                  line="{{ nopass }}"
+                  state=present
+      become: yes
+      become_user: root

@@ -1,12 +1,8 @@
 
 # ignore these files
 
-.env
 **/*.retry
 
 # ignore these folders
 
-.vagrant
-devstack
-stack
 src

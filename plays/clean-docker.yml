@@ -1,0 +1,52 @@
+---
+- name: 
+
+  hosts: 127.0.0.1
+  connection: local
+
+  vars:
+
+    user:      "{{ lookup('env', 'USER') }}"
+    workspace: "{{ lookup('env', 'WORKSPACE') }}"
+    base_img:  "{{ lookup('env', 'DEVSTACK_BASE_IMG')}}"
+    dstk_img:  "{{ lookup('env', 'DEVSTACK_IMG')}}"
+
+    dstk_container: "{{ lookup('env', 'DEVSTACK_CONTAINER') }}"
+
+  tasks:
+    
+    - name: Stop the container, ignore errors if it has already stopped
+      shell: "docker stop {{ dstk_container }}"
+      ignore_errors: yes
+      become: yes
+      become_user: "{{ user }}"    
+    
+    - name: Remove the container, ignore errors if not there
+      shell: "docker rm -f {{ dstk_container }}"
+      ignore_errors: yes
+      become: yes
+      become_user: "{{ user }}"
+    
+    - name: Clean up and containers that have exited
+      shell: "docker rm -f $(docker rm $(docker ps -q --filter status=exited)"
+      ignore_errors: yes
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Remove the Devstack image, ignore errors if they don't exist   
+      shell: "docker rmi -f {{ dstk_img }}" 
+      ignore_errors: yes
+      become: yes
+      become_user: "{{ user }}"
+    
+    - name: Remove the base image, ignore errors
+      shell: "docker rmi -f {{ base_img }}"
+      ignore_errors: yes
+      become: yes
+      become_user: "{{ user }}"
+    
+    - name: Remove any dangling images that may be lying around
+      shell: "docker rmi -f $(docker images -q --filter dangling=true)"
+      ignore_errors: yes
+      become: yes
+      become_user: "{{ user }}"
