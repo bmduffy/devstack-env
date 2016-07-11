@@ -10,8 +10,8 @@ export DEVSTACK_CONTAINER = devstack-container
 export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
 export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
 
-STACK   = "export TERM=xterm; cd /opt/devstack; ./stack.sh"
-UNSTACK = "export TERM=xterm; cd /opt/devstack; ./unstack.sh"
+STACK   = "/bin/bash /opt/devstack/stack.sh"
+UNSTACK = "/bin/bash /opt/devstack/unstack.sh"
 
 
 all: env clone build deploy
@@ -34,10 +34,10 @@ reload:
 
 stack:
 	cp local.conf ./src/devstack
-	docker exec -it ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${STACK}
+	docker exec -i ${DEVSTACK_CONTAINER} ${STACK}
 
 unstack:
-	docker exec -it ${DEVSTACK_CONTAINER} /usr/bin/su stack -c ${UNSTACK}
+	docker exec -i ${DEVSTACK_CONTAINER} {UNSTACK}
 
 shell:
 	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash

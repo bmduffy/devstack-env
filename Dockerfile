@@ -17,4 +17,4 @@ EXPOSE 80 443 8000 8080
 
 VOLUME [ "/opt" ]
 
-CMD ["/usr/sbin/init"]
+ENTRYPOINT tail -f /dev/null
