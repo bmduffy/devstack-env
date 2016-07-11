@@ -14,18 +14,17 @@
   tasks: 
 
     - name: Build base Centos 7 image with systemd
-      shell: "docker build --no-cache --rm -t {{ base_img }} ."
-      args:
-        chdir: "{{ workspace }}/{{ base_img }}"
+      shell: "docker build -f {{ workspace }}/{{ base_img }}/Dockerfile
+                           --no-cache 
+                           --rm 
+                           -t {{ base_img }} {{ base_img }}"
       become: yes
       become_user: "{{ user }}"
 
     - name: Build Devstack image
-      shell: "docker build --no-cache 
-                           --rm 
-                           -e WORKSPACE={{ workspace }} 
+      shell: "docker build -f {{ workspace }}/Dockerfile
+                           --no-cache 
+                           --rm
                            -t {{ dstk_img }} ."
-      args:
-        chdir: "{{ workspace }}/{{ dstk_img }}"
       become: yes
       become_user: "{{ user }}"
