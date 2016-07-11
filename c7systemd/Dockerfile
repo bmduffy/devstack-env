@@ -37,6 +37,6 @@ RUN pip install ansible
 
 RUN sed -i "s/requiretty/\!requiretty/g" /etc/sudoers
 
-VOLUME [ "/sys/fs/cgroup" ]
+VOLUME [ "/sys/fs/cgroup", "/tmp", "/run", "/lib/modules" ]
 
 CMD ["/usr/sbin/init"]

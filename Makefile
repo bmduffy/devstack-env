@@ -6,11 +6,12 @@ export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 export RUN_VOL    = "/lib/modules:/lib/modues:ro"
 export LIB_VOL    = "/run:/run:rw"
 
-export DEVSTACK_BASE_IMG  = c7systemd
-export DEVSTACK_IMG       = c7devstack
+export DEVSTACK_BASE_IMG  = local/c7systemd
+export DEVSTACK_BASE_DIR  = c7systemd
+export DEVSTACK_IMG       = local/c7devstack
 export DEVSTACK_CONTAINER = devstack-container
 export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
-export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
+export DEVSTACK_PORT      = "8080:8080"
 
 all: env clone build deploy
 

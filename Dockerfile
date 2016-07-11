@@ -1,4 +1,4 @@
-FROM c7systemd
+FROM local/c7systemd
 
 MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
