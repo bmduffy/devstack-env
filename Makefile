@@ -10,10 +10,6 @@ export DEVSTACK_CONTAINER = devstack-container
 export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
 export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
 
-STACK   = "/bin/bash /opt/devstack/stack.sh"
-UNSTACK = "/bin/bash /opt/devstack/unstack.sh"
-
-
 all: env clone build deploy
 
 clone:
@@ -34,13 +30,13 @@ reload:
 
 stack:
 	cp local.conf ./src/devstack
-	docker exec -i ${DEVSTACK_CONTAINER} ${STACK}
+	docker exec -i ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
 
 unstack:
-	docker exec -i ${DEVSTACK_CONTAINER} {UNSTACK}
+	docker exec -i ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
 
 shell:
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash
+	docker exec -i ${DEVSTACK_CONTAINER} /bin/bash
 
 clean-repos:
 	ansible-playbook -v ./plays/clean-host.yml
