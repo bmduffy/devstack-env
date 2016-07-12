@@ -35,9 +35,14 @@
       become: yes
       become_user: "{{ user }}"
 
+    # - name: Rebuild Devstack image
+    #   shell: "docker build -f {{ workspace }}/Dockerfile
+    #                        --rm 
+    #                        -t {{ dstk_img }} ."
+    #   become: yes
+    #   become_user: "{{ user }}"
+
     - name: Rebuild Devstack image
-      shell: "docker build -f {{ workspace }}/Dockerfile
-                           --rm 
-                           -t {{ dstk_img }} ."
+      shell: "docker-compose build"
       become: yes
       become_user: "{{ user }}"

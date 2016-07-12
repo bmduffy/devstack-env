@@ -25,7 +25,7 @@
       become: yes
       become_user: "{{ user }}"
 
-    - name: Ensure work directories are present
+    - name: Ensure devsack directory are present
       file: path="{{ workspace }}/src/devstack"
             state=directory
             mode="u=rwx,g=rwx,o=rx"

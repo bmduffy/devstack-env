@@ -19,16 +19,25 @@
 
   tasks:
     
+    # - name: Run the devstack container as the stack user in the container
+    #   shell: "docker run -d
+    #                      --privileged
+    #                      --net=host 
+    #                      -u stack
+    #                      -p {{ dstk_port }}
+    #                      -v {{ cgrp_vol  }}
+    #                      -v {{ run_vol   }}
+    #                      #-v {{ lib_vol   }}
+    #                      -v {{ dstk_vol  }}
+    #                      --name {{ dstk_container }} {{ dstk_img }}"
+    #   become: yes
+    #   become_user: "{{ user }}"
+
     - name: Run the devstack container as the stack user in the container
-      shell: "docker run -d
+      shell: "docker-compose run -d -p
                          --privileged
                          --net=host 
                          -u stack
-                         -p {{ dstk_port }}
-                         -v {{ cgrp_vol  }}
-                         -v {{ run_vol   }}
-                         #-v {{ lib_vol   }}
-                         -v {{ dstk_vol  }}
-                         --name {{ dstk_container }} {{ dstk_img }}"
+                         --name {{ dstk_container }}"
       become: yes
       become_user: "{{ user }}"

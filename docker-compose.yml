@@ -1,0 +1,45 @@
+#
+# Make sure these containers sync up with local conf file
+#
+# - MySQL    : https://hub.docker.com/_/mysql
+# - RabbitMQ : https://hub.docker.com/_/rabbitmq
+
+version: '2.0'
+
+master:
+  build: .
+  volumes:
+    - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    - '/run:/run:rw'
+    - '/lib/modules:/lib/modules:rw'
+    - '/tmp:/tmp:rw'
+    - './src:/opt'
+  links:
+    - db
+    - redis
+  ports:
+    - '80:80'
+    - '443:443'
+    - '8000:8000'
+    - '8080:8080'
+  environment:
+    DEBUG: 'true'
+    TERM:  'xterm'
+
+services:
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - '172.18.161.6:5432:5432'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'pass'
+
+  rabbit:
+    image: rabbitmq:latest
+    ports:
+      - '172.18.161.7:8080:8080'
+      - '172.18.161.7:15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: 'user' 
+      RABBITMQ_DEFAULT_PASS: 'password'

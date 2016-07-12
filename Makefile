@@ -2,16 +2,18 @@
 # Get system info
 
 export WORKSPACE  = $(shell pwd)
-export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-#export LIB_VOL    = "/lib/modules:/lib/modules:rw"
-export RUN_VOL    = "/run:/run:rw"
+#export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+#export RUN_VOL    = "/run:/run:rw"
 
-export DEVSTACK_BASE_IMG  = local/c7systemd
+# May not need this, not sure yet
+# export LIB_VOL    = "/lib/modules:/lib/modules:rw"
+
 export DEVSTACK_BASE_DIR  = c7systemd
+export DEVSTACK_BASE_IMG  = local/${DEVSTACK_BASE_DIR}
 export DEVSTACK_IMG       = local/c7devstack
 export DEVSTACK_CONTAINER = devstack-container
-export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
-export DEVSTACK_PORT      = "8080:8080"
+#export DEVSTACK_VOL       = ${WORKSPACE}/src:/opt
+#export DEVSTACK_PORT      = 8080:8080
 
 all: env clone build deploy
 
