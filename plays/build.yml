@@ -31,6 +31,6 @@
     #   become_user: "{{ user }}"
 
     - name: Build Devstack image
-      shell: "docker-compose build --no-cache"
+      shell: "docker-compose build --no-cache --force-rm"
       become: yes
       become_user: "{{ user }}"

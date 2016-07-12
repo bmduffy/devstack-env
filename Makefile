@@ -11,7 +11,7 @@ export WORKSPACE  = $(shell pwd)
 export DEVSTACK_BASE_DIR  = c7systemd
 export DEVSTACK_BASE_IMG  = local/${DEVSTACK_BASE_DIR}
 export DEVSTACK_IMG       = local/c7devstack
-export DEVSTACK_CONTAINER = devstack-container
+export DEVSTACK_CONTAINER = devstackenv_master_1
 #export DEVSTACK_VOL       = ${WORKSPACE}/src:/opt
 #export DEVSTACK_PORT      = 8080:8080
 
