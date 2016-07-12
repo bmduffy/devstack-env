@@ -3,8 +3,8 @@
 
 export WORKSPACE  = $(shell pwd)
 export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-export RUN_VOL    = "/lib/modules:/lib/modues:ro"
-export LIB_VOL    = "/run:/run:rw"
+#export LIB_VOL    = "/lib/modules:/lib/modules:rw"
+export RUN_VOL    = "/run:/run:rw"
 
 export DEVSTACK_BASE_IMG  = local/c7systemd
 export DEVSTACK_BASE_DIR  = c7systemd

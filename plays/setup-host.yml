@@ -11,8 +11,15 @@
 
   tasks: 
 
-    - name: Ensure work directories are present
+    - name: Ensure source mount point present
       file: path="{{ workspace }}/src"
+            state=directory
+            mode="u=rwx,g=rwx,o=rx" 
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Ensure bash script directory present
+      file: path="{{ workspace }}/scripts"
             state=directory
             mode="u=rwx,g=rwx,o=rx" 
       become: yes

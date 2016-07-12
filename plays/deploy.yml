@@ -27,7 +27,7 @@
                          -p {{ dstk_port }}
                          -v {{ cgrp_vol  }}
                          -v {{ run_vol   }}
-                         -v {{ lib_vol   }}
+                         #-v {{ lib_vol   }}
                          -v {{ dstk_vol  }}
                          --name {{ dstk_container }} {{ dstk_img }}"
       become: yes
