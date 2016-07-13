@@ -18,13 +18,6 @@
       become: yes
       become_user: "{{ user }}"
 
-    - name: Ensure bash script directory present
-      file: path="{{ workspace }}/scripts"
-            state=directory
-            mode="u=rwx,g=rwx,o=rx" 
-      become: yes
-      become_user: "{{ user }}"
-
     - name: Ensure devsack directory are present
       file: path="{{ workspace }}/src/devstack"
             state=directory

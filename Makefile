@@ -35,13 +35,13 @@ reload:
 
 stack:
 	cp local.conf ./src/devstack
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
+	docker exec -it -u stack ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
 
 unstack:
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
+	docker exec -it -u stack ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
 
 shell:
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash
+	docker exec -it -u stack ${DEVSTACK_CONTAINER} /bin/bash
 
 clean-repos:
 	ansible-playbook -v ./plays/clean-host.yml

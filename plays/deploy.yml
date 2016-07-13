@@ -34,10 +34,6 @@
     #   become_user: "{{ user }}"
 
     - name: Run the devstack container as the stack user in the container
-      shell: "docker-compose run -d -p
-                         --privileged
-                         --net=host 
-                         -u stack
-                         --name {{ dstk_container }}"
+      shell: "docker-compose up -d"
       become: yes
       become_user: "{{ user }}"
