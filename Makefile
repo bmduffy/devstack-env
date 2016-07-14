@@ -2,11 +2,11 @@
 # Get system info
 
 export WORKSPACE  = $(shell pwd)
-export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-export RUN_VOL    = "/run:/run:rw"
+export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro,Z"
+export RUN_VOL    = "/run:/run:rw,Z"
 
 # May not need this, not sure yet
- export LIB_VOL    = "/lib/modules:/lib/modules:rw"
+export LIB_VOL    = "/lib/modules:/lib/modules:rw,Z"
 
 export DEVSTACK_BASE_DIR  = c7systemd
 export DEVSTACK_BASE_IMG  = local/${DEVSTACK_BASE_DIR}

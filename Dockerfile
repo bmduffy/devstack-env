@@ -3,6 +3,7 @@ FROM local/c7systemd
 MAINTAINER Brian Duffy brian.duffy@ammeon.com
 
 ENV TERM xterm
+ENV GIT_DISCOVERY_ACROSS_FILESYSTEM 1
 
 WORKDIR /opt/
 

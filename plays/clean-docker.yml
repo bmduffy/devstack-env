@@ -28,7 +28,7 @@
       become_user: "{{ user }}"
     
     - name: Clean up and containers that have exited
-      shell: "docker rm -f $(docker rm $(docker ps -q --filter status=exited)"
+      shell: "docker rm -f $(docker ps -q --filter status=exited)"
       ignore_errors: yes
       become: yes
       become_user: "{{ user }}"
