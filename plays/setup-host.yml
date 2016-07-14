@@ -25,6 +25,13 @@
       become: yes
       become_user: "{{ user }}"
 
+    - name: Ensure devsack directory are present
+      file: path="{{ workspace }}/src/stack"
+            state=directory
+            mode="u=rwx,g=rwx,o=rx"
+      become: yes
+      become_user: "{{ user }}"
+
     - name: Clone devstack
       git: repo=https://git.openstack.org/openstack-dev/devstack
            dest="{{ workspace }}/src/devstack"
