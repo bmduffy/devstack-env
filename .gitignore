@@ -2,6 +2,8 @@
 # ignore these files
 
 **/*.retry
+**/*.pp
+**/*.te
 
 # ignore these folders
 
