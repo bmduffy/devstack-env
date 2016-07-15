@@ -2,13 +2,18 @@
 # Get system info
 
 export WORKSPACE  = $(shell pwd)
-export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+export CGROUP_VOL = "/sys/fs/cgroup:/sys/fs/cgroup:ro,Z"
 
-export DEVSTACK_BASE_IMG  = c7systemd
-export DEVSTACK_IMG       = c7devstack
+# May not need these, not sure yet
+#export RUN_VOL    = "/run:/run:rw,Z"
+#export LIB_VOL    = "/lib/modules:/lib/modules:rw,Z"
+
+export DEVSTACK_BASE_DIR  = c7systemd
+export DEVSTACK_BASE_IMG  = local/${DEVSTACK_BASE_DIR}
+export DEVSTACK_IMG       = local/c7devstack
 export DEVSTACK_CONTAINER = devstack-container
-export DEVSTACK_VOL       = "${WORKSPACE}/src:/opt"
-export DEVSTACK_PORT      = "127.0.0.1:8080:8080"
+export DEVSTACK_VOL       = ${WORKSPACE}/src:/opt
+export DEVSTACK_PORT      = 8080:8080
 
 all: env clone build deploy
 
@@ -30,13 +35,13 @@ reload:
 
 stack:
 	cp local.conf ./src/devstack
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
+	docker exec -u stack -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/stack.sh
 
 unstack:
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
+	docker exec -u stack -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
 
 shell:
-	docker exec -it ${DEVSTACK_CONTAINER} /bin/bash
+	docker exec -u stack -it ${DEVSTACK_CONTAINER} /bin/bash
 
 clean-repos:
 	ansible-playbook -v ./plays/clean-host.yml

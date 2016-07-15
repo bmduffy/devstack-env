@@ -6,13 +6,15 @@
 
   vars:
 
-    user:      "{{ lookup('env', 'USER') }}"
-    workspace: "{{ lookup('env', 'WORKSPACE') }}"
-    cgrp_vol:  "{{ lookup('env', 'CGROUP_VOL') }}"
-    dstk_vol:  "{{ lookup('env', 'DEVSTACK_VOL') }}"
+    user:      "{{ lookup('env', 'USER')          }}"
+    workspace: "{{ lookup('env', 'WORKSPACE')     }}"
+    cgrp_vol:  "{{ lookup('env', 'CGROUP_VOL')    }}"
+    # run_vol:   "{{ lookup('env', 'RUN_VOL')       }}"
+    # lib_vol:   "{{ lookup('env', 'LIB_VOL')       }}"
+    dstk_vol:  "{{ lookup('env', 'DEVSTACK_VOL')  }}"
     dstk_port: "{{ lookup('env', 'DEVSTACK_PORT') }}"
 
-    dstk_img:       "{{ lookup('env', 'DEVSTACK_IMG') }}"
+    dstk_img:       "{{ lookup('env', 'DEVSTACK_IMG')       }}"
     dstk_container: "{{ lookup('env', 'DEVSTACK_CONTAINER') }}"
 
   tasks:
@@ -21,10 +23,17 @@
       shell: "docker run -d
                          --privileged
                          --net=host 
-                         -u stack
                          -p {{ dstk_port }}
-                         -v {{ cgrp_vol }}
-                         -v {{ dstk_vol }}
+                         -v {{ cgrp_vol  }}
+                         -v {{ dstk_vol  }}
                          --name {{ dstk_container }} {{ dstk_img }}"
       become: yes
-      become_user: "{{ user }}"
+    #   become_user: "{{ user }}"
+
+    # - name: RDeploy... The Stack of Dev 
+    #   shell: "docker-compose up -d"
+    #   become: yes
+    #   become_user: "{{ user }}"
+
+                        # -v {{ run_vol   }}
+                         # -v {{ lib_vol   }}

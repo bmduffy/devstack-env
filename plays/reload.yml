@@ -8,6 +8,7 @@
 
     user:      "{{ lookup('env', 'USER') }}"
     workspace: "{{ lookup('env', 'WORKSPACE') }}"
+    base_dir:  "{{ lookup('env', 'DEVSTACK_BASE_DIR') }}"
     base_img:  "{{ lookup('env', 'DEVSTACK_BASE_IMG')}}"
     dstk_img:  "{{ lookup('env', 'DEVSTACK_IMG')}}"
 
@@ -28,9 +29,9 @@
       become_user: "{{ user }}"
 
     - name: Rebuild base Centos 7 image with systemd
-      shell: "docker build -f {{ workspace }}/{{ base_img }}/Dockerfile
+      shell: "docker build -f {{ workspace }}/{{ base_dir }}/Dockerfile
                            --rm 
-                           -t {{ base_img }} {{ base_img }}"
+                           -t {{ base_img }} {{ base_dir }}"
       become: yes
       become_user: "{{ user }}"
 
@@ -40,3 +41,8 @@
                            -t {{ dstk_img }} ."
       become: yes
       become_user: "{{ user }}"
+
+    # - name: Rebuild Devstack image
+    #   shell: "docker-compose build"
+    #   become: yes
+    #   become_user: "{{ user }}"

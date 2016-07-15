@@ -11,15 +11,22 @@
 
   tasks: 
 
-    - name: Ensure work directories are present
+    - name: Ensure source mount point present
       file: path="{{ workspace }}/src"
             state=directory
             mode="u=rwx,g=rwx,o=rx" 
       become: yes
       become_user: "{{ user }}"
 
-    - name: Ensure work directories are present
+    - name: Ensure devsack directory are present
       file: path="{{ workspace }}/src/devstack"
+            state=directory
+            mode="u=rwx,g=rwx,o=rx"
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Ensure devsack directory are present
+      file: path="{{ workspace }}/src/stack"
             state=directory
             mode="u=rwx,g=rwx,o=rx"
       become: yes
