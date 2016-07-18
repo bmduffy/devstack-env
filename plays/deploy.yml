@@ -4,6 +4,9 @@
   hosts: 127.0.0.1
   connection: local
 
+  # http://www.projectatomic.io/blog/2015/06/notes-on-fedora-centos-and-docker-storage-drivers/
+  # http://developerblog.redhat.com/2014/09/30/overview-storage-scalability-docker/
+
   vars:
 
     user:      "{{ lookup('env', 'USER')          }}"
@@ -20,15 +23,13 @@
   tasks:
     
     - name: Run the devstack container as the stack user in the container
-      shell: "docker run -d
-                         --privileged
-                         --net=host 
+      shell: "docker run -d --privileged --net=host 
                          -p {{ dstk_port }}
                          -v {{ cgrp_vol  }}
                          -v {{ dstk_vol  }}
                          --name {{ dstk_container }} {{ dstk_img }}"
       become: yes
-    #   become_user: "{{ user }}"
+      become_user: "{{ user }}"
 
     # - name: RDeploy... The Stack of Dev 
     #   shell: "docker-compose up -d"
