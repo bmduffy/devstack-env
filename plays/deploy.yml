@@ -12,8 +12,6 @@
     user:      "{{ lookup('env', 'USER')          }}"
     workspace: "{{ lookup('env', 'WORKSPACE')     }}"
     cgrp_vol:  "{{ lookup('env', 'CGROUP_VOL')    }}"
-    # run_vol:   "{{ lookup('env', 'RUN_VOL')       }}"
-    # lib_vol:   "{{ lookup('env', 'LIB_VOL')       }}"
     dstk_vol:  "{{ lookup('env', 'DEVSTACK_VOL')  }}"
     dstk_port: "{{ lookup('env', 'DEVSTACK_PORT') }}"
 
@@ -30,11 +28,3 @@
                          --name {{ dstk_container }} {{ dstk_img }}"
       become: yes
       become_user: "{{ user }}"
-
-    # - name: RDeploy... The Stack of Dev 
-    #   shell: "docker-compose up -d"
-    #   become: yes
-    #   become_user: "{{ user }}"
-
-                        # -v {{ run_vol   }}
-                         # -v {{ lib_vol   }}
