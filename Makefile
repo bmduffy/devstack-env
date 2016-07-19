@@ -15,23 +15,46 @@ export DEVSTACK_CONTAINER = devstack-container
 export DEVSTACK_VOL       = ${WORKSPACE}/src:/opt
 export DEVSTACK_PORT      = 8080:8080
 
+
 all: env clone build deploy
 
 clone:
 	ansible-playbook -v ./plays/setup-host.yml
 
 build:
-	ansible-playbook -v ./plays/build.yml
+
+	docker build -f ${WORKSPACE}/${DEVSTACK_BASE_DIR}/Dockerfile \
+				 --no-cache --rm -t ${DEVSTACK_BASE_IMG} ${DEVSTACK_BASE_DIR} 
+	
+	docker build -f ${WORKSPACE}/Dockerfile \
+    			 --no-cache --rm -t ${DEVSTACK_IMG} .
 
 deploy:
-	ansible-playbook -v ./plays/deploy.yml
+	
+	docker run -d --privileged --net=host \
+               -p ${DEVSTACK_PORT} \
+               -v ${CGROUP_VOL} \
+               -v ${DEVSTACK_VOL} \
+               --name ${DEVSTACK_CONTAINER} ${DEVSTACK_IMG}
 
 env:
 	ansible-playbook -v ./plays/env.yml
 
 reload:
+
 	ansible-playbook -v ./plays/reload.yml
-	ansible-playbook -v ./plays/deploy.yml
+
+	docker build -f ${WORKSPACE}/${DEVSTACK_BASE_DIR}/Dockerfile \
+				 --rm -t ${DEVSTACK_BASE_IMG} ${DEVSTACK_BASE_DIR}
+
+	docker build -f ${WORKSPACE}/Dockerfile \
+    			 --rm -t ${DEVSTACK_IMG} .
+
+	docker run -d --privileged --net=host \
+               -p ${DEVSTACK_PORT} \
+               -v ${CGROUP_VOL} \
+               -v ${DEVSTACK_VOL} \
+               --name ${DEVSTACK_CONTAINER} ${DEVSTACK_IMG}
 
 stack:
 	cp local.conf ./src/devstack
