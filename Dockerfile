@@ -10,8 +10,10 @@ WORKDIR /opt/
 # copy necessary files to the image
 
 RUN mkdir -p /tmp/setup
+RUN mkdir -p /etc/ansible
 
-COPY ./plays/devstack.yml /tmp/setup/
+COPY ./plays/hosts           /etc/ansible/
+COPY ./plays/devstack.yml    /tmp/setup/
 COPY ./scripts/stack_env.sh  /etc/profile.d/
 
 RUN ansible-playbook -v /tmp/setup/devstack.yml

@@ -25,9 +25,12 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # install software
 
-RUN yum install -y wget && \
-	wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-7.noarch.rpm && \
-	rpm -i epel-release-7-7.noarch.rpm && \
+# Check for new RPMS  
+# http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-X.noarch.rpm 
+
+COPY ./rpms/epel-release-7.8.noarch.rpm /tmp/
+
+RUN rpm -i /tmp/epel-release-7-8.noarch.rpm && \
     yum update -y && \
     yum install -y net-tools iproute.x86_64 iproute-devel.x86_64 vim sudo git gcc openssl-devel python-devel python-pip && \
     pip install --upgrade pip setuptools && \
