@@ -6,6 +6,7 @@
 
   vars:
 
+    user:           "{{ lookup('env', 'USER') }}"
     dstk_container: "{{ lookup('env', 'DEVSTACK_CONTAINER') }}"
 
   tasks:

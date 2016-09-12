@@ -28,7 +28,7 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 # Check for new RPMS  
 # http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-X.noarch.rpm 
 
-COPY ./rpms/epel-release-7.8.noarch.rpm /tmp/
+COPY ./rpms/epel-release-7-8.noarch.rpm /tmp/
 
 RUN rpm -i /tmp/epel-release-7-8.noarch.rpm && \
     yum update -y && \
