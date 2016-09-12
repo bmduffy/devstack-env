@@ -33,7 +33,7 @@ deploy:
 	
 	docker run -d --privileged --net=host \
                -p ${DEVSTACK_PORT} \
-               -v ${CGROUP_VOL} \
+               -v ${CGROUP_VOL} \su 
                -v ${DEVSTACK_VOL} \
                --name ${DEVSTACK_CONTAINER} ${DEVSTACK_IMG}
 
@@ -62,6 +62,7 @@ stack:
 
 unstack:
 	docker exec -u stack -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/unstack.sh
+	docker exec -u stack -it ${DEVSTACK_CONTAINER} /bin/bash /opt/devstack/clean.sh
 
 shell:
 	docker exec -u stack -it ${DEVSTACK_CONTAINER} /bin/bash
